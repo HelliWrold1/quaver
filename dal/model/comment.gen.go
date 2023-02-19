@@ -17,7 +17,7 @@ type Comment struct {
 	VideoID  int64     `gorm:"column:video_id;type:int unsigned;not null" json:"video_id"`
 	Msg      string    `gorm:"column:msg;type:varchar(255);not null" json:"msg"`
 	Datetime time.Time `gorm:"column:datetime;type:datetime;not null" json:"datetime"`
-	Cancel   int64     `gorm:"column:cancel;type:tinyint;not null" json:"cancel"`
+	Delete_  int64     `gorm:"column:delete;type:tinyint;not null" json:"delete"`
 }
 
 // TableName Comment's table name

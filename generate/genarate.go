@@ -65,11 +65,12 @@ func main() {
 	Video := g.GenerateModel("video")
 	Comment := g.GenerateModel("comment")
 	Like := g.GenerateModel("like")
+	Follow := g.GenerateModel("follow")
 	// 创建全部模型文件, 并覆盖前面创建的同名模型
 	allModel := g.GenerateAllTable(fieldOpts...)
 
 	// 创建模型的方法,生成文件在 query 目录; 先创建结果不会被后创建的覆盖
-	g.ApplyBasic(User, Like, Video, Comment)
+	g.ApplyBasic(User, Like, Video, Comment, Follow)
 	g.ApplyBasic(allModel...)
 
 	g.Execute()

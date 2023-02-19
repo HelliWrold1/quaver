@@ -18,6 +18,7 @@ import (
 var (
 	Q       = new(Query)
 	Comment *comment
+	Follow  *follow
 	Like    *like
 	User    *user
 	Video   *video
@@ -26,6 +27,7 @@ var (
 func SetDefault(db *gorm.DB, opts ...gen.DOOption) {
 	*Q = *Use(db, opts...)
 	Comment = &Q.Comment
+	Follow = &Q.Follow
 	Like = &Q.Like
 	User = &Q.User
 	Video = &Q.Video
@@ -35,6 +37,7 @@ func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 	return &Query{
 		db:      db,
 		Comment: newComment(db, opts...),
+		Follow:  newFollow(db, opts...),
 		Like:    newLike(db, opts...),
 		User:    newUser(db, opts...),
 		Video:   newVideo(db, opts...),
@@ -45,6 +48,7 @@ type Query struct {
 	db *gorm.DB
 
 	Comment comment
+	Follow  follow
 	Like    like
 	User    user
 	Video   video
@@ -56,6 +60,7 @@ func (q *Query) clone(db *gorm.DB) *Query {
 	return &Query{
 		db:      db,
 		Comment: q.Comment.clone(db),
+		Follow:  q.Follow.clone(db),
 		Like:    q.Like.clone(db),
 		User:    q.User.clone(db),
 		Video:   q.Video.clone(db),
@@ -74,6 +79,7 @@ func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 	return &Query{
 		db:      db,
 		Comment: q.Comment.replaceDB(db),
+		Follow:  q.Follow.replaceDB(db),
 		Like:    q.Like.replaceDB(db),
 		User:    q.User.replaceDB(db),
 		Video:   q.Video.replaceDB(db),
@@ -82,6 +88,7 @@ func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 
 type queryCtx struct {
 	Comment ICommentDo
+	Follow  IFollowDo
 	Like    ILikeDo
 	User    IUserDo
 	Video   IVideoDo
@@ -90,6 +97,7 @@ type queryCtx struct {
 func (q *Query) WithContext(ctx context.Context) *queryCtx {
 	return &queryCtx{
 		Comment: q.Comment.WithContext(ctx),
+		Follow:  q.Follow.WithContext(ctx),
 		Like:    q.Like.WithContext(ctx),
 		User:    q.User.WithContext(ctx),
 		Video:   q.Video.WithContext(ctx),
