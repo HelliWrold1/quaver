@@ -10,7 +10,9 @@ import (
 
 func main() {
 	// 连接数据库
-	db, err := gorm.Open(mysql.Open(config.MYSQLDSN))
+	config.Init()
+	dsn := config.GetDSN()
+	db, err := gorm.Open(mysql.Open(dsn))
 	if err != nil {
 		panic(fmt.Errorf("cannot establish db connection: %w", err))
 	}

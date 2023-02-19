@@ -44,11 +44,11 @@ type comment struct {
 
 	ALL      field.Asterisk
 	ID       field.Int64
-	AuthorID field.Int64  // 评论者id
-	VideoID  field.Int64  // 被评论的视频id
-	Msg      field.String // 评论内容
-	Datetime field.Time   // 发表日期
-	Cancel   field.Int64  // 是否删除评论，默认为未删除：0
+	AuthorID field.Int64
+	VideoID  field.Int64
+	Msg      field.String
+	Datetime field.Time
+	Cancel   field.Int64
 
 	fieldMap map[string]field.Expr
 }

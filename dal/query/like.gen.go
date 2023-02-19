@@ -44,7 +44,7 @@ type like struct {
 	ID      field.Int64
 	VideoID field.Int64
 	LikerID field.Int64
-	Like    field.Int64 // 喜欢与否，默认为喜欢：1
+	Like    field.Int64
 
 	fieldMap map[string]field.Expr
 }
