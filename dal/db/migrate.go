@@ -14,6 +14,7 @@ func migration() {
 			&model.Video{},
 			&model.Like{},
 			&model.Comment{},
+			&model.Follow{},
 		)
 	if err != nil {
 		fmt.Println("migrate err", err)
