@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RemoteTargetsManager">
+    <targets>
+      <target name="ubuntu@192.168.24.136:22" type="ssh/sftp" uuid="7f8b334a-b2cf-468c-90e1-57aa53fd948c">
+        <config>
+          <option name="projectRootOnTarget" value="/home/ubuntu/go/src/github.com/HelliWrold1/quaver" />
+          <option name="serverName" value="ubuntu@192.168.24.136:22 password" />
+        </config>
+        <ContributedStateBase type="GoLanguageRuntime">
+          <config>
+            <option name="compiledExecutablesVolume">
+              <VolumeState>
+                <option name="remotePath" value="/home/ubuntu/go/src/github.com/HelliWrold1/quaver/output" />
+              </VolumeState>
+            </option>
+            <option name="projectSourcesVolume">
+              <VolumeState>
+                <option name="remotePath" value="/home/ubuntu/go/src/github.com/HelliWrold1/quaver" />
+              </VolumeState>
+            </option>
+          </config>
+        </ContributedStateBase>
+      </target>
+    </targets>
+  </component>
+</project>
