@@ -12,8 +12,8 @@ mysql:
   username: root
   password: root
   charset: utf8mb4
-  maxIdleConns : 28  #空闲连接池最连接数
-  maxOpenConns : 100 #最大打开连接数
+  maxIdleConns : 28  # 空闲连接池最连接数
+  maxOpenConns : 100 # 最大打开连接数
   maxLifeTime  : 30  # sec,连接的最长重用时间
   maxIdleTime  : 30  # sec,连接最长空闲时间
 
@@ -25,4 +25,4 @@ redis:
   password:
 
 gormGen:
-  queryOutPath: dal/query
+  queryOutPath: dal/query # query文件输出目录
