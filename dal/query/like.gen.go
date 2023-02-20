@@ -30,7 +30,7 @@ func newLike(db *gorm.DB, opts ...gen.DOOption) like {
 	_like.ID = field.NewInt64(tableName, "id")
 	_like.VideoID = field.NewInt64(tableName, "video_id")
 	_like.LikerID = field.NewInt64(tableName, "liker_id")
-	_like.Like = field.NewInt64(tableName, "like")
+	_like.Delete_ = field.NewInt64(tableName, "delete")
 
 	_like.fillFieldMap()
 
@@ -44,7 +44,7 @@ type like struct {
 	ID      field.Int64
 	VideoID field.Int64
 	LikerID field.Int64
-	Like    field.Int64 // 喜欢与否，默认为喜欢：1
+	Delete_ field.Int64
 
 	fieldMap map[string]field.Expr
 }
@@ -64,7 +64,7 @@ func (l *like) updateTableName(table string) *like {
 	l.ID = field.NewInt64(table, "id")
 	l.VideoID = field.NewInt64(table, "video_id")
 	l.LikerID = field.NewInt64(table, "liker_id")
-	l.Like = field.NewInt64(table, "like")
+	l.Delete_ = field.NewInt64(table, "delete")
 
 	l.fillFieldMap()
 
@@ -85,7 +85,7 @@ func (l *like) fillFieldMap() {
 	l.fieldMap["id"] = l.ID
 	l.fieldMap["video_id"] = l.VideoID
 	l.fieldMap["liker_id"] = l.LikerID
-	l.fieldMap["like"] = l.Like
+	l.fieldMap["delete"] = l.Delete_
 }
 
 func (l like) clone(db *gorm.DB) like {

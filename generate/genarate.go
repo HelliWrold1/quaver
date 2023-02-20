@@ -27,7 +27,7 @@ func main() {
 		// WithQueryInterface 生成interface形式的查询代码(可导出), 如`Where()`方法返回的就是一个可导出的接口类型
 		Mode: gen.WithDefaultQuery | gen.WithoutContext | gen.WithQueryInterface,
 
-		//ModelPkgPath: "github.com/HelliWrold1/quaver/cmd/user",
+		//ModelPkgPath: "cmd/user/dal/model",
 
 		WithUnitTest: true,
 		// 表字段可为 null 值时, 对应结体字段使用指针类型
