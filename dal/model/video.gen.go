@@ -13,7 +13,7 @@ const TableNameVideo = "video"
 // Video mapped from table <video>
 type Video struct {
 	ID       int64     `gorm:"column:id;type:int unsigned;primaryKey;autoIncrement:true" json:"id"`
-	AuthorID int64     `gorm:"column:author_id;type:int unsigned;not null" json:"author_id"`
+	AuthorID int64     `gorm:"column:author_id;type:int unsigned;not null;index:author_id,priority:1" json:"author_id"`
 	Title    string    `gorm:"column:title;type:varchar(255);not null" json:"title"`
 	PlayURL  string    `gorm:"column:play_url;type:varchar(255);not null" json:"play_url"`
 	CoverURL string    `gorm:"column:cover_url;type:varchar(255);not null" json:"cover_url"`
