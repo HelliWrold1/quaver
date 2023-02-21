@@ -8,18 +8,20 @@ import (
 	"github.com/HelliWrold1/quaver/kitex_gen/user"
 	"github.com/HelliWrold1/quaver/pkg/errno"
 	"github.com/stretchr/testify/assert"
+	"math/rand"
+	"strconv"
 	"testing"
-	//"github.com/bouk/monkey" TODO monkey包在哪里导入？？？
+	"time"
 )
 
 func TestCreateUserService_CreateUser(t *testing.T) {
 	config.Init()
 	db.Init()
+	rand.Seed(time.Now().UnixNano())
 	userReq := user.RegisterReq{
-		Username: "admin",
-		Password: "12345",
+		Username: strconv.Itoa(int(rand.Int63())),
+		Password: strconv.Itoa(int(rand.Int63())),
 	}
-
 	t.Run("NotExist", func(t *testing.T) {
 		err := service.NewCreateUserService(context.Background()).CreateUser(&userReq)
 		assert.Equal(t, nil, err)
