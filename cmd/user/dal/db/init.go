@@ -1,6 +1,7 @@
 package db
 
 import (
+	"fmt"
 	"github.com/HelliWrold1/quaver/cmd/user/config"
 	"github.com/HelliWrold1/quaver/dal/query"
 	"gorm.io/driver/mysql"
@@ -14,7 +15,9 @@ var DB *gorm.DB
 var Q *query.Query
 
 func Init() {
+	config.Init()
 	dsn := config.GetDSN()
+	fmt.Println(dsn)
 	maxIdleConns, maxOpenConns, maxLifeTime, maxIdleTime := config.GetConnPoolConfig()
 
 	// 设置日志

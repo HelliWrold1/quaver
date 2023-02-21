@@ -3,12 +3,15 @@ package config
 import (
 	"fmt"
 	"github.com/spf13/viper"
+	"os"
 	"strings"
 )
 
 func Init() {
-	viper.SetConfigName("../config/config") // 配置文件的文件名
-	viper.SetConfigType("yml")              // 配置文件的后缀
+	workDir, _ := os.Getwd()      // 获取工作目录
+	viper.SetConfigName("config") // 配置文件的文件名
+	viper.SetConfigType("yml")    // 配置文件的后缀
+	viper.AddConfigPath(workDir + "/config")
 	err := viper.ReadInConfig()
 	if err != nil {
 		panic(err)
