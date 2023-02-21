@@ -33,3 +33,8 @@ func TestCreateUserService_CreateUser(t *testing.T) {
 	})
 	return
 }
+
+func TestSetPwd(t *testing.T) {
+	hashed := service.SetPwd("root")
+	assert.Equal(t, "-9qjG_EYhFTfpzY_EnhFjiVpGb508ACvvcgcBdK8J8Y=", hashed)
+}

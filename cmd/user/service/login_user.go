@@ -5,6 +5,7 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/base64"
+	"fmt"
 	"github.com/HelliWrold1/quaver/cmd/user/dal/db"
 	"github.com/HelliWrold1/quaver/kitex_gen/user"
 	"github.com/HelliWrold1/quaver/pkg/consts"
@@ -20,7 +21,7 @@ func NewLoginUserService(ctx context.Context) *LoginUserService {
 	return &LoginUserService{ctx: ctx}
 }
 
-func (s *LoginUserService) LoginUser(req user.LoginReq) (UserID int64, err error) {
+func (s *LoginUserService) LoginUser(req *user.LoginReq) (UserID int64, err error) {
 	users, err := db.QueryUserByName(s.ctx, req.Username)
 	if err == gorm.ErrRecordNotFound {
 		return 0, err
@@ -29,6 +30,7 @@ func (s *LoginUserService) LoginUser(req user.LoginReq) (UserID int64, err error
 	if len(users) == 0 {
 		return 0, errno.AuthorizationFailedErr
 	}
+	fmt.Println(users[0])
 
 	usr := users[0]
 
@@ -43,7 +45,7 @@ func CheckPwd(password string, hashedPwd string) bool {
 	mac.Write([]byte(password))
 	sum := mac.Sum(nil)
 	base64.URLEncoding.EncodeToString(sum)
-	if password == hashedPwd {
+	if SetPwd(password) == hashedPwd {
 		return true
 	}
 	return false
