@@ -8,6 +8,11 @@ import (
 	"gorm.io/gorm"
 )
 
+type Querier interface {
+	// SELECT * FROM @@table WHERE name = @name{{if role !=""}} AND role = @role{{end}}
+	FilterWithNameAndRole(name, role string) ([]gen.T, error)
+}
+
 func main() {
 	// 连接数据库
 	config.Init()
@@ -27,7 +32,7 @@ func main() {
 		// WithQueryInterface 生成interface形式的查询代码(可导出), 如`Where()`方法返回的就是一个可导出的接口类型
 		Mode: gen.WithDefaultQuery | gen.WithoutContext | gen.WithQueryInterface,
 
-		//ModelPkgPath: "cmd/user/dal/model",
+		//ModelPkgPath: "github.com/HelliWrold1/quaver/cmd/user",
 
 		WithUnitTest: true,
 		// 表字段可为 null 值时, 对应结体字段使用指针类型
@@ -75,6 +80,6 @@ func main() {
 	// 创建模型的方法,生成文件在 query 目录; 先创建结果不会被后创建的覆盖
 	g.ApplyBasic(User, Like, Video, Comment, Follow)
 	g.ApplyBasic(allModel...)
-
+	g.ApplyInterface(func(Querier) {}, User, Like, Video, Comment, Follow)
 	g.Execute()
 }

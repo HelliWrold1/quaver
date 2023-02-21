@@ -6,6 +6,7 @@ package query
 
 import (
 	"context"
+	"strings"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -28,8 +29,8 @@ func newUser(db *gorm.DB, opts ...gen.DOOption) user {
 	tableName := _user.userDo.TableName()
 	_user.ALL = field.NewAsterisk(tableName)
 	_user.ID = field.NewInt64(tableName, "id")
-	_user.Name = field.NewString(tableName, "name")
-	_user.Pwd = field.NewString(tableName, "pwd")
+	_user.Username = field.NewString(tableName, "username")
+	_user.Password = field.NewString(tableName, "password")
 
 	_user.fillFieldMap()
 
@@ -39,10 +40,10 @@ func newUser(db *gorm.DB, opts ...gen.DOOption) user {
 type user struct {
 	userDo
 
-	ALL  field.Asterisk
-	ID   field.Int64
-	Name field.String
-	Pwd  field.String
+	ALL      field.Asterisk
+	ID       field.Int64
+	Username field.String
+	Password field.String
 
 	fieldMap map[string]field.Expr
 }
@@ -60,8 +61,8 @@ func (u user) As(alias string) *user {
 func (u *user) updateTableName(table string) *user {
 	u.ALL = field.NewAsterisk(table)
 	u.ID = field.NewInt64(table, "id")
-	u.Name = field.NewString(table, "name")
-	u.Pwd = field.NewString(table, "pwd")
+	u.Username = field.NewString(table, "username")
+	u.Password = field.NewString(table, "password")
 
 	u.fillFieldMap()
 
@@ -80,8 +81,8 @@ func (u *user) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 func (u *user) fillFieldMap() {
 	u.fieldMap = make(map[string]field.Expr, 3)
 	u.fieldMap["id"] = u.ID
-	u.fieldMap["name"] = u.Name
-	u.fieldMap["pwd"] = u.Pwd
+	u.fieldMap["username"] = u.Username
+	u.fieldMap["password"] = u.Password
 }
 
 func (u user) clone(db *gorm.DB) user {
@@ -155,6 +156,27 @@ type IUserDo interface {
 	Returning(value interface{}, columns ...string) IUserDo
 	UnderlyingDB() *gorm.DB
 	schema.Tabler
+
+	FilterWithNameAndRole(name string, role string) (result []model.User, err error)
+}
+
+// SELECT * FROM @@table WHERE name = @name{{if role !=""}} AND role = @role{{end}}
+func (u userDo) FilterWithNameAndRole(name string, role string) (result []model.User, err error) {
+	var params []interface{}
+
+	var generateSQL strings.Builder
+	params = append(params, name)
+	generateSQL.WriteString("SELECT * FROM user WHERE name = ? ")
+	if role != "" {
+		params = append(params, role)
+		generateSQL.WriteString("AND role = ? ")
+	}
+
+	var executeSQL *gorm.DB
+	executeSQL = u.UnderlyingDB().Raw(generateSQL.String(), params...).Find(&result) // ignore_security_alert
+	err = executeSQL.Error
+
+	return
 }
 
 func (u userDo) Debug() IUserDo {

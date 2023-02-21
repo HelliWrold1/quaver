@@ -7,6 +7,7 @@ package query
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"testing"
 
 	"github.com/HelliWrold1/quaver/dal/model"
@@ -141,5 +142,20 @@ func Test_likeQuery(t *testing.T) {
 	_, err = _do.Not().Or().Clauses().Take()
 	if err != nil {
 		t.Error("Not/Or/Clauses on table <like> fail:", err)
+	}
+}
+
+var LikeFilterWithNameAndRoleTestCase = []TestCase{}
+
+func Test_like_FilterWithNameAndRole(t *testing.T) {
+	like := newLike(db)
+	do := like.WithContext(context.Background()).Debug()
+
+	for i, tt := range LikeFilterWithNameAndRoleTestCase {
+		t.Run("FilterWithNameAndRole_"+strconv.Itoa(i), func(t *testing.T) {
+			res1, res2 := do.FilterWithNameAndRole(tt.Input.Args[0].(string), tt.Input.Args[1].(string))
+			assert(t, "FilterWithNameAndRole", res1, tt.Expectation.Ret[0])
+			assert(t, "FilterWithNameAndRole", res2, tt.Expectation.Ret[1])
+		})
 	}
 }

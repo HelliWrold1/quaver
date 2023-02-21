@@ -7,6 +7,7 @@ package query
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"testing"
 
 	"github.com/HelliWrold1/quaver/dal/model"
@@ -40,7 +41,7 @@ func Test_userQuery(t *testing.T) {
 		t.Error("GetFieldByName(\"\") from user success")
 	}
 
-	err = _do.Create(&model.User{})
+	err = _do.Create(&model.User{Username: "abc", Password: "cde"})
 	if err != nil {
 		t.Error("create item in table <user> fail:", err)
 	}
@@ -141,5 +142,20 @@ func Test_userQuery(t *testing.T) {
 	_, err = _do.Not().Or().Clauses().Take()
 	if err != nil {
 		t.Error("Not/Or/Clauses on table <user> fail:", err)
+	}
+}
+
+var UserFilterWithNameAndRoleTestCase = []TestCase{}
+
+func Test_user_FilterWithNameAndRole(t *testing.T) {
+	user := newUser(db)
+	do := user.WithContext(context.Background()).Debug()
+
+	for i, tt := range UserFilterWithNameAndRoleTestCase {
+		t.Run("FilterWithNameAndRole_"+strconv.Itoa(i), func(t *testing.T) {
+			res1, res2 := do.FilterWithNameAndRole(tt.Input.Args[0].(string), tt.Input.Args[1].(string))
+			assert(t, "FilterWithNameAndRole", res1, tt.Expectation.Ret[0])
+			assert(t, "FilterWithNameAndRole", res2, tt.Expectation.Ret[1])
+		})
 	}
 }

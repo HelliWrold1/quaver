@@ -1,7 +1,7 @@
 namespace go user
 
 enum ErrCode{
-    SuccessCode = 200
+    SuccessCode = 0
     ServiceErrCode = 10001
     ParamErrCode = 1002
     UserAlreadyExistErrCode    = 10003
@@ -13,14 +13,25 @@ struct StatusResp{
     2:optional string status_msg
 }
 
-struct CreateReq{
+struct RegisterReq{
     1: required string username
     2: required string password
 }
 
-struct CreateResp{
+struct RegisterResp{
     1: required StatusResp status_resp
-    2:required i64 user_id
+    2: required i64 user_id
+    3: required string token
+}
+
+struct LoginReq{
+    1: required string username
+    2: required string password
+}
+
+struct LoginResp{
+    1: required StatusResp status_resp
+    2: required i64 user_id
     3: required string token
 }
 
@@ -49,6 +60,7 @@ struct User{
 }
 
 service UserService{
-    CreateResp CreateUser(1: CreateReq req)
-    InfoResp GetInfo(1: InfoReq req)
+    RegisterResp UserRegister(1: RegisterReq req)
+    LoginResp UserLogin(1: LoginReq req)
+    InfoResp UserInfo(1: InfoReq req)
 }

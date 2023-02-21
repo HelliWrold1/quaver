@@ -11,8 +11,9 @@ import (
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
-	CreateUser(ctx context.Context, req *user.CreateReq, callOptions ...callopt.Option) (r *user.CreateResp, err error)
-	GetInfo(ctx context.Context, req *user.InfoReq, callOptions ...callopt.Option) (r *user.InfoResp, err error)
+	UserRegister(ctx context.Context, req *user.RegisterReq, callOptions ...callopt.Option) (r *user.RegisterResp, err error)
+	UserLogin(ctx context.Context, req *user.LoginReq, callOptions ...callopt.Option) (r *user.LoginResp, err error)
+	UserInfo(ctx context.Context, req *user.InfoReq, callOptions ...callopt.Option) (r *user.InfoResp, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -44,12 +45,17 @@ type kUserServiceClient struct {
 	*kClient
 }
 
-func (p *kUserServiceClient) CreateUser(ctx context.Context, req *user.CreateReq, callOptions ...callopt.Option) (r *user.CreateResp, err error) {
+func (p *kUserServiceClient) UserRegister(ctx context.Context, req *user.RegisterReq, callOptions ...callopt.Option) (r *user.RegisterResp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.CreateUser(ctx, req)
+	return p.kClient.UserRegister(ctx, req)
 }
 
-func (p *kUserServiceClient) GetInfo(ctx context.Context, req *user.InfoReq, callOptions ...callopt.Option) (r *user.InfoResp, err error) {
+func (p *kUserServiceClient) UserLogin(ctx context.Context, req *user.LoginReq, callOptions ...callopt.Option) (r *user.LoginResp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.GetInfo(ctx, req)
+	return p.kClient.UserLogin(ctx, req)
+}
+
+func (p *kUserServiceClient) UserInfo(ctx context.Context, req *user.InfoReq, callOptions ...callopt.Option) (r *user.InfoResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.UserInfo(ctx, req)
 }
