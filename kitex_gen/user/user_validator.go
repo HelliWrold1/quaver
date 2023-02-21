@@ -25,6 +25,12 @@ func (p *StatusResp) IsValid() error {
 	return nil
 }
 func (p *RegisterReq) IsValid() error {
+	if len(p.Username) < int(1) {
+		return fmt.Errorf("field Username min_len rule failed, current value: %d", len(p.Username))
+	}
+	if len(p.Password) < int(6) {
+		return fmt.Errorf("field Password min_len rule failed, current value: %d", len(p.Password))
+	}
 	return nil
 }
 func (p *RegisterResp) IsValid() error {
@@ -36,6 +42,12 @@ func (p *RegisterResp) IsValid() error {
 	return nil
 }
 func (p *LoginReq) IsValid() error {
+	if len(p.Username) < int(1) {
+		return fmt.Errorf("field Username min_len rule failed, current value: %d", len(p.Username))
+	}
+	if len(p.Password) < int(6) {
+		return fmt.Errorf("field Password min_len rule failed, current value: %d", len(p.Password))
+	}
 	return nil
 }
 func (p *LoginResp) IsValid() error {
@@ -47,21 +59,11 @@ func (p *LoginResp) IsValid() error {
 	return nil
 }
 func (p *InfoReq) IsValid() error {
+	if p.UserId <= int64(0) {
+		return fmt.Errorf("field UserId gt rule failed, current value: %v", p.UserId)
+	}
 	return nil
 }
 func (p *InfoResp) IsValid() error {
-	if p.StatusResp != nil {
-		if err := p.StatusResp.IsValid(); err != nil {
-			return fmt.Errorf("filed StatusResp not valid, %w", err)
-		}
-	}
-	if p.User != nil {
-		if err := p.User.IsValid(); err != nil {
-			return fmt.Errorf("filed User not valid, %w", err)
-		}
-	}
-	return nil
-}
-func (p *User) IsValid() error {
 	return nil
 }
