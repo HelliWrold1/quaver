@@ -20,7 +20,7 @@ func NewLoginUserService(ctx context.Context) *LoginUserService {
 	return &LoginUserService{ctx: ctx}
 }
 
-func (s *LoginUserService) LoginUser(req user.LoginReq) (UserID int64, err error) {
+func (s *LoginUserService) LoginUser(req *user.LoginReq) (UserID int64, err error) {
 	users, err := db.QueryUserByName(s.ctx, req.Username)
 	if err == gorm.ErrRecordNotFound {
 		return 0, err

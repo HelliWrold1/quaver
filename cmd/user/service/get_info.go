@@ -16,10 +16,10 @@ func NewGetInfoService(ctx context.Context) *GetInfoService {
 	return &GetInfoService{ctx: ctx}
 }
 
-func (s *GetInfoService) GetInfo(ctx context.Context, req user.InfoReq) ([]*model.User, error) {
-	users, err := db.QueryUserByID(s.ctx, req.UserId)
-	if err == gorm.ErrRecordNotFound {
-		return nil, err
+func (s *GetInfoService) GetInfo(req *user.InfoReq) ([]*model.User, error) {
+	users, _ := db.QueryUserByID(s.ctx, req.UserId)
+	if len(users) == 0 {
+		return nil, gorm.ErrRecordNotFound
 	}
 	return users, nil
 }
