@@ -16,7 +16,7 @@ func TestGetInfoService_GetInfo(t *testing.T) {
 	db.Init()
 	t.Run("None", func(t *testing.T) {
 		_, err := service.NewGetInfoService(context.Background()).GetInfo(&user.InfoReq{
-			UserId: 5,
+			UserId: 2147483648,
 		})
 		assert.Equal(t, gorm.ErrRecordNotFound, err)
 	})
