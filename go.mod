@@ -6,6 +6,7 @@ require (
 	github.com/apache/thrift v0.18.0
 	github.com/cloudwego/kitex v0.4.4
 	github.com/spf13/viper v1.15.0
+	github.com/stretchr/testify v1.8.1
 	gorm.io/driver/mysql v1.4.7
 	gorm.io/driver/sqlite v1.4.4
 	gorm.io/gen v0.3.21

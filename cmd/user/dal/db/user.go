@@ -3,10 +3,13 @@ package db
 import (
 	"context"
 	"github.com/HelliWrold1/quaver/dal/model"
+	"github.com/HelliWrold1/quaver/pkg/errno"
 )
 
 func CreateUser(ctx context.Context, u *model.User) error {
-	existUser(ctx, u)
+	if existUser(ctx, u) {
+		return errno.UserAlreadyExistErr
+	}
 	q := Q.User.WithContext(ctx)
 	return q.Create(u)
 }

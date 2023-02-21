@@ -2,6 +2,7 @@ package db
 
 import (
 	"github.com/HelliWrold1/quaver/config"
+	"github.com/HelliWrold1/quaver/dal/query"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -34,7 +35,7 @@ func Init() {
 	if err != nil {
 		panic(err)
 	}
-
+	query.SetDefault(db)
 	// 设置连接池
 	sqlDB, _ := db.DB()
 	sqlDB.SetMaxIdleConns(maxIdleConns)
