@@ -4,8 +4,10 @@ server:
   jwtSecret: HelliWrold1
   identityKey: id
   sha256key: HelliWrold1
-  userServiceName: UserRegisterLoginInfo
+  userServiceName: User
   userServiceAddr: 127.0.0.1:9000
+  commentServiceName: Comment
+  commentServiceAddr: 127.0.0.1:9001
   apiServiceName: QuaverApi
   apiServiceAddr: 127.0.0.1:9001
   exportEndpoint: 127.0.0.1:4317

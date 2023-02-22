@@ -61,3 +61,14 @@ func (p *ListResp) IsValid() error {
 	}
 	return nil
 }
+func (p *DeleteReq) IsValid() error {
+	return nil
+}
+func (p *DeleteResp) IsValid() error {
+	if p.StatusResp != nil {
+		if err := p.StatusResp.IsValid(); err != nil {
+			return fmt.Errorf("filed StatusResp not valid, %w", err)
+		}
+	}
+	return nil
+}

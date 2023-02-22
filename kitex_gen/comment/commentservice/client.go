@@ -13,6 +13,7 @@ import (
 type Client interface {
 	PublishComment(ctx context.Context, req *comment.PubReq, callOptions ...callopt.Option) (r *comment.PubResp, err error)
 	ListComment(ctx context.Context, req *comment.ListReq, callOptions ...callopt.Option) (r *comment.ListResp, err error)
+	DeleteComment(ctx context.Context, req *comment.DeleteReq, callOptions ...callopt.Option) (r *comment.DeleteResp, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -52,4 +53,9 @@ func (p *kCommentServiceClient) PublishComment(ctx context.Context, req *comment
 func (p *kCommentServiceClient) ListComment(ctx context.Context, req *comment.ListReq, callOptions ...callopt.Option) (r *comment.ListResp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.ListComment(ctx, req)
+}
+
+func (p *kCommentServiceClient) DeleteComment(ctx context.Context, req *comment.DeleteReq, callOptions ...callopt.Option) (r *comment.DeleteResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.DeleteComment(ctx, req)
 }

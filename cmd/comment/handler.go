@@ -32,7 +32,6 @@ func (s *CommentServiceImpl) PublishComment(ctx context.Context, req *comment.Pu
 
 // ListComment implements the CommentServiceImpl interface.
 func (s *CommentServiceImpl) ListComment(ctx context.Context, req *comment.ListReq) (resp *comment.ListResp, err error) {
-	// TODO: Your code here...
 	resp = new(comment.ListResp)
 	err = resp.IsValid()
 	if err != nil {
@@ -43,5 +42,15 @@ func (s *CommentServiceImpl) ListComment(ctx context.Context, req *comment.ListR
 		resp.StatusResp = pack.BuildStatusResp(err)
 	}
 	pack.BuildCommentsResp(resp, comments)
+	return resp, nil
+}
+
+// DeleteComment implements the CommentServiceImpl interface.
+func (s *CommentServiceImpl) DeleteComment(ctx context.Context, req *comment.DeleteReq) (resp *comment.DeleteResp, err error) {
+	err = service.NewDeleteCommentsService(ctx).DeleteComment(req)
+	if err != nil {
+		resp.StatusResp = pack.BuildStatusResp(err)
+	}
+	resp.StatusResp = pack.BuildStatusResp(errno.Success)
 	return resp, nil
 }

@@ -21,6 +21,7 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	methods := map[string]kitex.MethodInfo{
 		"PublishComment": kitex.NewMethodInfo(publishCommentHandler, newCommentServicePublishCommentArgs, newCommentServicePublishCommentResult, false),
 		"ListComment":    kitex.NewMethodInfo(listCommentHandler, newCommentServiceListCommentArgs, newCommentServiceListCommentResult, false),
+		"DeleteComment":  kitex.NewMethodInfo(deleteCommentHandler, newCommentServiceDeleteCommentArgs, newCommentServiceDeleteCommentResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "comment",
@@ -72,6 +73,24 @@ func newCommentServiceListCommentResult() interface{} {
 	return comment.NewCommentServiceListCommentResult()
 }
 
+func deleteCommentHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*comment.CommentServiceDeleteCommentArgs)
+	realResult := result.(*comment.CommentServiceDeleteCommentResult)
+	success, err := handler.(comment.CommentService).DeleteComment(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newCommentServiceDeleteCommentArgs() interface{} {
+	return comment.NewCommentServiceDeleteCommentArgs()
+}
+
+func newCommentServiceDeleteCommentResult() interface{} {
+	return comment.NewCommentServiceDeleteCommentResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -97,6 +116,16 @@ func (p *kClient) ListComment(ctx context.Context, req *comment.ListReq) (r *com
 	_args.Req = req
 	var _result comment.CommentServiceListCommentResult
 	if err = p.c.Call(ctx, "ListComment", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) DeleteComment(ctx context.Context, req *comment.DeleteReq) (r *comment.DeleteResp, err error) {
+	var _args comment.CommentServiceDeleteCommentArgs
+	_args.Req = req
+	var _result comment.CommentServiceDeleteCommentResult
+	if err = p.c.Call(ctx, "DeleteComment", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

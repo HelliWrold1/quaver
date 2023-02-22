@@ -33,7 +33,17 @@ struct ListResp{
     2: required list<Comment> comment_list
 }
 
+struct DeleteReq{
+    1: required i64 video_id
+    2: required i64 comment_id
+}
+
+struct DeleteResp{
+    1: required StatusResp status_resp
+}
+
 service CommentService{
     PubResp PublishComment(1:PubReq req)
     ListResp ListComment(1:ListReq req)
+    DeleteResp DeleteComment(1: DeleteReq req)
 }
