@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/HelliWrold1/quaver/cmd/user/dal/db"
 	"github.com/HelliWrold1/quaver/cmd/user/service"
-	"github.com/HelliWrold1/quaver/config"
 	"github.com/HelliWrold1/quaver/kitex_gen/user"
 	"github.com/HelliWrold1/quaver/pkg/errno"
 	"github.com/stretchr/testify/assert"
@@ -15,7 +14,6 @@ import (
 )
 
 func TestCreateUserService_CreateUser(t *testing.T) {
-	config.Init()
 	db.Init()
 	rand.Seed(time.Now().UnixNano())
 	userReq := user.RegisterReq{

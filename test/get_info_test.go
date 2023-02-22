@@ -5,14 +5,12 @@ import (
 	"github.com/HelliWrold1/quaver/cmd/user/dal/db"
 	"github.com/HelliWrold1/quaver/cmd/user/service"
 	"github.com/HelliWrold1/quaver/kitex_gen/user"
-	"github.com/HelliWrold1/quaver/test/config"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/gorm"
 	"testing"
 )
 
 func TestGetInfoService_GetInfo(t *testing.T) {
-	config.Init()
 	db.Init()
 	t.Run("None", func(t *testing.T) {
 		_, err := service.NewGetInfoService(context.Background()).GetInfo(&user.InfoReq{

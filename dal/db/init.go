@@ -13,8 +13,10 @@ import (
 var DB *gorm.DB
 
 func Init() {
-	dsn := config.GetDSN()
-	maxIdleConns, maxOpenConns, maxLifeTime, maxIdleTime := config.GetConnPoolConfig()
+	conf := config.NewQuaverConfig()
+	conf.LocalConfigInit()
+	dsn := conf.GetMySqlDSN()
+	maxIdleConns, maxOpenConns, maxLifeTime, maxIdleTime := conf.GetMysqlConnPoolConfig()
 
 	// 设置日志
 	gormlogrus := logger.New(

@@ -7,8 +7,8 @@ import (
 	"encoding/base64"
 	"fmt"
 	"github.com/HelliWrold1/quaver/cmd/user/dal/db"
+	"github.com/HelliWrold1/quaver/config"
 	"github.com/HelliWrold1/quaver/kitex_gen/user"
-	"github.com/HelliWrold1/quaver/pkg/consts"
 	"github.com/HelliWrold1/quaver/pkg/errno"
 	"gorm.io/gorm"
 )
@@ -41,7 +41,9 @@ func (s *LoginUserService) LoginUser(req *user.LoginReq) (UserID int64, err erro
 }
 
 func CheckPwd(password string, hashedPwd string) bool {
-	mac := hmac.New(sha256.New, []byte(consts.SHA256Key))
+	conf := config.NewQuaverConfig()
+	conf.LocalConfigInit()
+	mac := hmac.New(sha256.New, []byte(conf.ServerConfig.SHA256key))
 	mac.Write([]byte(password))
 	sum := mac.Sum(nil)
 	base64.URLEncoding.EncodeToString(sum)

@@ -7,7 +7,6 @@ import (
 	"github.com/HelliWrold1/quaver/cmd/user/service"
 	"github.com/HelliWrold1/quaver/kitex_gen/user"
 	"github.com/HelliWrold1/quaver/pkg/errno"
-	"github.com/HelliWrold1/quaver/test/config"
 	"github.com/stretchr/testify/assert"
 	"math/rand"
 	"testing"
@@ -15,7 +14,6 @@ import (
 )
 
 func TestLoginUserService_LoginUser(t *testing.T) {
-	config.Init()
 	db.Init()
 	rand.Seed(time.Now().UnixNano())
 	t.Run("UserLogin", func(t *testing.T) {

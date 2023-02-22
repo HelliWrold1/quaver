@@ -2,10 +2,12 @@ server:
   domain: user
   version: 1.0
   jwtSecret: HelliWrold1
-  grpcAddress: "127.0.0.1:10001"
+  sha256key: HelliWrold1
+  userServiceName: UserRegisterLoginInfo
+  userServiceAddr: 127.0.0.1:9000
+  exportEndpoint: 127.0.0.1:4317
 
 mysql:
-  driverName: mysql
   host: 127.0.0.1
   port: 3306
   database: quaver
@@ -21,8 +23,12 @@ etcd:
   address: 127.0.0.1:2379
 
 redis:
-  address: 127.0.0.1:6379
+  host: 127.0.0.1:6379
+  port:
   password:
+  database:
+  poolSize:
+  minIdleConns:
 
 gormGen:
   queryOutPath: dal/query # query文件输出目录

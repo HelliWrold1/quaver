@@ -5,6 +5,7 @@ go 1.16
 require (
 	github.com/apache/thrift v0.18.0
 	github.com/cloudwego/kitex v0.4.4
+	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/kitex-contrib/obs-opentelemetry v0.1.0
 	github.com/kitex-contrib/obs-opentelemetry/logging/logrus v0.0.0-20230219092456-5e6c84962323
 	github.com/kitex-contrib/registry-etcd v0.1.0

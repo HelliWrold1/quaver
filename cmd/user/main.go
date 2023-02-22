@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/HelliWrold1/quaver/cmd/user/dal"
+	"github.com/HelliWrold1/quaver/config"
 	user "github.com/HelliWrold1/quaver/kitex_gen/user/userservice"
-	"github.com/HelliWrold1/quaver/pkg/consts"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/limit"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
@@ -22,20 +22,22 @@ func Init() {
 }
 
 func main() {
-	r, err := etcd.NewEtcdRegistry([]string{consts.ETCDAddress}) // 创建一个基于 etcd 的注册表
+	conf := config.NewQuaverConfig()
+	conf.LocalConfigInit()
+	r, err := etcd.NewEtcdRegistry([]string{conf.EtcdConfig.Address}) // 创建一个基于 etcd 的注册表
 	if err != nil {
 		klog.Fatal(err)
 	}
-	addr, err := net.ResolveTCPAddr(consts.TCP, consts.UserServiceAddr) // 返回 TCP 端点的地址
+	addr, err := net.ResolveTCPAddr("tcp", conf.ServerConfig.UserServiceAddr) // 返回 TCP 端点的地址
 	if err != nil {
 		klog.Fatal(err)
 	}
 	Init()
 
 	provider.NewOpenTelemetryProvider(
-		provider.WithServiceName(consts.UserServiceName),   //
-		provider.WithExportEndpoint(consts.ExportEndpoint), // 配置导出端点
-		provider.WithInsecure(),                            // 为导出器的 gRPC 禁用客户端传输安全
+		provider.WithServiceName(conf.ServerConfig.UserServiceName),   //
+		provider.WithExportEndpoint(conf.ServerConfig.ExportEndpoint), // 配置导出端点
+		provider.WithInsecure(), // 为导出器的 gRPC 禁用客户端传输安全
 	)
 
 	svr := user.NewServer(new(UserServiceImpl),
@@ -45,7 +47,7 @@ func main() {
 		server.WithMuxTransport(),                  // 指定传输类型为 mux
 		server.WithSuite(tracing.NewServerSuite()), // 添加带有http2和ttheader元处理程序的otel的NewServerSuite链路追踪服务器套件
 		//  为 RPCIInfo 中的客户端端点提供初始信息
-		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: consts.UserServiceName}),
+		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: conf.ServerConfig.UserServiceName}),
 	)
 
 	err = svr.Run()

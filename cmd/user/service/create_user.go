@@ -6,9 +6,9 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"github.com/HelliWrold1/quaver/cmd/user/dal/db"
+	"github.com/HelliWrold1/quaver/config"
 	"github.com/HelliWrold1/quaver/dal/model"
 	"github.com/HelliWrold1/quaver/kitex_gen/user"
-	"github.com/HelliWrold1/quaver/pkg/consts"
 )
 
 type CreateUserService struct {
@@ -24,7 +24,9 @@ func (s *CreateUserService) CreateUser(req *user.RegisterReq) error {
 }
 
 func SetPwd(password string) string {
-	mac := hmac.New(sha256.New, []byte(consts.SHA256Key))
+	conf := config.NewQuaverConfig()
+	conf.LocalConfigInit()
+	mac := hmac.New(sha256.New, []byte(conf.ServerConfig.SHA256key))
 	mac.Write([]byte(password))
 	sum := mac.Sum(nil)
 	return base64.URLEncoding.EncodeToString(sum)

@@ -15,8 +15,9 @@ type Querier interface {
 
 func main() {
 	// 连接数据库
-	config.Init()
-	dsn := config.GetDSN()
+	conf := config.NewQuaverConfig()
+	conf.LocalConfigInit()
+	dsn := conf.GetMySqlDSN()
 	db, err := gorm.Open(mysql.Open(dsn))
 	if err != nil {
 		panic(fmt.Errorf("cannot establish db connection: %w", err))
@@ -25,7 +26,7 @@ func main() {
 	// 生成实例
 	g := gen.NewGenerator(gen.Config{
 		// 相对执行`go run`时的路径, 会自动创建目录
-		OutPath: "dal/query",
+		OutPath: conf.GormGenConfig.QueryOutPath,
 
 		// WithDefaultQuery 生成默认查询结构体(作为全局变量使用), 即`Q`结构体和其字段(各表模型)
 		// WithoutContext 生成没有context调用限制的代码供查询
