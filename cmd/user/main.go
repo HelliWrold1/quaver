@@ -41,7 +41,7 @@ func main() {
 	)
 
 	svr := user.NewServer(new(UserServiceImpl),
-		server.WithServiceAddr(addr), // 设置服务器坚挺地址
+		server.WithServiceAddr(addr), // 设置服务器监听地址
 		server.WithRegistry(r),       // 设置一个 Registry 来注册服务
 		server.WithLimit(&limit.Option{MaxConnections: 1000, MaxQPS: 100}), // 设置并发连接数或最大 QPS 的限制，此选项不稳定
 		server.WithMuxTransport(),                  // 指定传输类型为 mux
