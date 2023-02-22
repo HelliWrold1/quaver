@@ -12,7 +12,7 @@ type PublishCommentService struct {
 	ctx context.Context
 }
 
-func NewCreateUserService(ctx context.Context) *PublishCommentService {
+func NewPublishCommentService(ctx context.Context) *PublishCommentService {
 	return &PublishCommentService{ctx: ctx}
 }
 

@@ -10,7 +10,7 @@ func migration() {
 	err := DB.Set("gorm:table_options", "charset=utf8mb4").
 		// 自动迁移，建表
 		AutoMigrate(
-			&model.User{},
+			&model.Comment{},
 		)
 	if err != nil {
 		fmt.Println("migrate err", err)

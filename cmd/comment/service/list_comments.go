@@ -16,7 +16,7 @@ func NewListCommentsService(ctx context.Context) *ListCommentsService {
 	return &ListCommentsService{ctx: ctx}
 }
 
-func (s *ListCommentsService) ListComments(ctx context.Context, req *comment.ListReq) ([]*model.Comment, error) {
+func (s *ListCommentsService) ListComments(req *comment.ListReq) ([]*model.Comment, error) {
 	comments, _ := db.ListComments(s.ctx, req.VideoId)
 	if len(comments) == 0 {
 		return nil, gorm.ErrRecordNotFound

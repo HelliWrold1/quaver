@@ -17,9 +17,12 @@ type QuaverConfig struct {
 
 type ServerConfig struct {
 	JWTSecret       string `mapstructure:"jwtSecret"`
+	IdentityKey     string `mapstructure:"identityKey"`
 	SHA256key       string `mapstructure:"sha256key"`
 	UserServiceName string `mapstructure:"userServiceName"`
 	UserServiceAddr string `mapstructure:"userServiceAddr"`
+	ApiServiceName  string `mapstructure:"apiServiceName"`
+	ApiServiceAddr  string `mapstructure:"apiServiceAddr"`
 	ExportEndpoint  string `mapstructure:"exportEndpoint"`
 }
 

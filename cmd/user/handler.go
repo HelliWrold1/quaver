@@ -26,6 +26,7 @@ func (s *UserServiceImpl) UserRegister(ctx context.Context, req *user.RegisterRe
 		return resp, err
 	}
 	resp.StatusResp = pack.BuildStatusResp(errno.Success)
+
 	return resp, nil
 }
 
@@ -60,5 +61,6 @@ func (s *UserServiceImpl) UserInfo(ctx context.Context, req *user.InfoReq) (resp
 		return nil, err
 	}
 	resp.UserId = users[0].ID
+	resp.Username = users[0].Username
 	return resp, nil
 }

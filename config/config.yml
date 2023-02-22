@@ -2,9 +2,12 @@ server:
   domain: user
   version: 1.0
   jwtSecret: HelliWrold1
+  identityKey: id
   sha256key: HelliWrold1
   userServiceName: UserRegisterLoginInfo
   userServiceAddr: 127.0.0.1:9000
+  apiServiceName: QuaverApi
+  apiServiceAddr: 127.0.0.1:9001
   exportEndpoint: 127.0.0.1:4317
 
 mysql:
