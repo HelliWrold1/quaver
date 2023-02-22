@@ -8,6 +8,10 @@ go install github.com/cloudwego/thriftgo@latest
 go install github.com/cloudwego/thrift-gen-validator@latest
 go install github.com/cloudwego/hertz/cmd/hz@latest
 ```
+# 配置文件相关
+**注意配置文件的相关设置！！！**
+
+阅读[config.md](./config/config.md)！！！！
 
 # 参考
 https://www.cloudwego.io/zh/docs/
