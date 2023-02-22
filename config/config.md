@@ -2,7 +2,6 @@
 
 需要将项目目录放到`$GOPATH/src/github.com/HelliWrold1/`下，使[config.go](./config.go)读取的路径为项目目录`$GOPATH/src/github.com/HelliWrold1/quaver`
 
-因此可以在`$GOPATH`下执行下面的命令
 ```shell
 cd $GOPATH
 mkdir -p src/github.com/HelliWrold1
