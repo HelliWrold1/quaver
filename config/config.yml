@@ -8,6 +8,10 @@ server:
   userServiceAddr: 127.0.0.1:9000
   commentServiceName: Comment
   commentServiceAddr: 127.0.0.1:9001
+  videoServiceName: Video
+  videoServiceAddr: 127.0.0.1:9002
+  likeServiceName: Like
+  likeServiceAddr: 127.0.0.1:9003
   apiServiceName: QuaverApi
   apiServiceAddr: 127.0.0.1:9001
   exportEndpoint: :4317
