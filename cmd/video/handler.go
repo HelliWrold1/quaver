@@ -9,12 +9,11 @@ import (
 	"time"
 )
 
-// PublishVideoImpl implements the last service interface defined in the IDL.
-type PublishVideoImpl struct{}
+// PublishServiceImpl implements the last service interface defined in the IDL.
+type VideoServiceImpl struct{}
 
-// PublishVideo implements the PublishVideoImpl interface.
-func (s *PublishVideoImpl) PublishVideo(ctx context.Context, req *video.PubReq) (resp *video.PubResp, err error) {
-	// TODO: Your code here...
+// PublishVideo implements the VideoServiceImpl interface.
+func (s *VideoServiceImpl) PublishVideo(ctx context.Context, req *video.PubReq) (resp *video.PubResp, err error) {
 	// 检验参数合法性
 	err = req.IsValid()
 	if err != nil {
@@ -31,8 +30,8 @@ func (s *PublishVideoImpl) PublishVideo(ctx context.Context, req *video.PubReq) 
 	return resp, nil
 }
 
-// ListVideos implements the PublishVideoImpl interface.
-func (s *PublishVideoImpl) ListVideos(ctx context.Context, req *video.ListReq) (resp *video.ListResp, err error) {
+// ListVideos implements the VideoServiceImpl interface.
+func (s *VideoServiceImpl) ListVideos(ctx context.Context, req *video.ListReq) (resp *video.ListResp, err error) {
 	err = req.IsValid()
 	if err != nil {
 		resp.StatusResp = pack.BuildStatusResp(errno.ParamErr)
@@ -50,9 +49,9 @@ func (s *PublishVideoImpl) ListVideos(ctx context.Context, req *video.ListReq) (
 	return resp, nil
 }
 
-// ListFeeds implements the PublishVideoImpl interface.
+// ListFeeds implements the VideoServiceImpl interface.
 // 时间参数可选，API层提供，类型是int64时间戳time.Now().Unix()获取时间戳，默认当前时间
-func (s *PublishVideoImpl) ListFeeds(ctx context.Context, req *video.FeedReq) (resp *video.FeedResp, err error) {
+func (s *VideoServiceImpl) ListFeeds(ctx context.Context, req *video.FeedReq) (resp *video.FeedResp, err error) {
 	err = req.IsValid()
 	if err != nil {
 		statusResp := pack.BuildStatusResp(err)
@@ -83,8 +82,8 @@ func (s *PublishVideoImpl) ListFeeds(ctx context.Context, req *video.FeedReq) (r
 	return resp, nil
 }
 
-// ListLikes implements the PublishVideoImpl interface.
-func (s *PublishVideoImpl) ListLikes(ctx context.Context, req *video.ListLikeReq) (resp *video.ListLikeResp, err error) {
+// ListLikes implements the VideoServiceImpl interface.
+func (s *VideoServiceImpl) ListLikes(ctx context.Context, req *video.ListLikeReq) (resp *video.ListLikeResp, err error) {
 	err = req.IsValid()
 	if err != nil {
 		resp.StatusResp = pack.BuildStatusResp(errno.ParamErr)

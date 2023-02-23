@@ -40,10 +40,10 @@ func initUser() {
 	userClient = c
 }
 
-func UserInfo(ctx context.Context, req *user.InfoReq) (*user.InfoResp, error) {
-	resp, err := userClient.UserInfo(ctx, req)
+func UserInfo(uid int64) (string, error) {
+	resp, err := userClient.UserInfo(context.Background(), &user.InfoReq{UserId: uid})
 	if err != nil {
-		return resp, nil
+		return "HelliWrold1", nil // 备用名字
 	}
-	return resp, err
+	return resp.Username, err
 }

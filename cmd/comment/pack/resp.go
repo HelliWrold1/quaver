@@ -1,12 +1,10 @@
 package pack
 
 import (
-	"context"
 	"errors"
 	"github.com/HelliWrold1/quaver/cmd/comment/rpc"
 	"github.com/HelliWrold1/quaver/dal/model"
 	"github.com/HelliWrold1/quaver/kitex_gen/comment"
-	"github.com/HelliWrold1/quaver/kitex_gen/user"
 	"github.com/HelliWrold1/quaver/pkg/errno"
 )
 
@@ -28,16 +26,16 @@ func BuildStatusResp(err error) *comment.StatusResp {
 func BuildCommentsResp(resp *comment.ListResp, comments []*model.Comment) {
 	respCmts := make([]*comment.Comment, 10)
 	for i := 0; i < len(comments); i++ {
-		infoResp, err := rpc.UserInfo(context.Background(), &user.InfoReq{UserId: comments[i].ID})
+		userName, err := rpc.UserInfo(comments[i].ID)
 		if err != nil {
-			infoResp.Username = "HelliWrold1" // 如果出错，则将名字替换为这个
+			userName = "HelliWrold1"
 		}
 		respCmts = append(respCmts, &comment.Comment{
 			CommentId: comments[i].ID,
 			UserId:    comments[i].AuthorID,
-			UserName:  infoResp.Username,
+			UserName:  userName,
 			Msg:       comments[i].Msg,
-			Date:      comments[i].Datetime.Format("2006-01-02 15:04:05"),
+			Date:      comments[i].Datetime.Format("01-02"), // mm-dd
 		})
 	}
 	resp.CommentList = respCmts

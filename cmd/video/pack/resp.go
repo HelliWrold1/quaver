@@ -2,6 +2,7 @@ package pack
 
 import (
 	"errors"
+	"github.com/HelliWrold1/quaver/cmd/video/rpc"
 	"github.com/HelliWrold1/quaver/dal/model"
 	kitexvideo "github.com/HelliWrold1/quaver/kitex_gen/video"
 	"github.com/HelliWrold1/quaver/pkg/errno"
@@ -26,13 +27,19 @@ func BuildStatusResp(err error) *kitexvideo.StatusResp {
 func BuildPubVideoResp(resp *kitexvideo.ListResp, videos []*model.Video) {
 	var videosResp = make([]*kitexvideo.Video, 10)
 	for i := 0; i < len(resp.VideoList); i++ {
+		userName, countLikes, countCmts, like := packVideoInfo(videos, int64(i))
 		videosResp = append(videosResp, &kitexvideo.Video{
 			VideoId: videos[i].ID,
 			Author: &kitexvideo.User{
-				Id: videos[i].AuthorID,
+				Id:   videos[i].AuthorID,
+				Name: userName,
 			},
-			PlayUrl:  videos[i].PlayURL,
-			CoverUrl: videos[i].CoverURL,
+			PlayUrl:       videos[i].PlayURL,
+			CoverUrl:      videos[i].CoverURL,
+			FavoriteCount: countLikes,
+			CommentCount:  countCmts,
+			IsFavorite:    like,
+			Title:         videos[i].Title,
 		})
 	}
 	resp.VideoList = videosResp
@@ -43,13 +50,19 @@ func BuildFeedsResp(resp *kitexvideo.FeedResp, videos []*model.Video) {
 	var videosResp = make([]*kitexvideo.Video, 30)
 
 	for i := 0; i < len(resp.VideoList); i++ {
+		userName, countLikes, countCmts, like := packVideoInfo(videos, int64(i))
 		videosResp = append(videosResp, &kitexvideo.Video{
 			VideoId: videos[i].ID,
 			Author: &kitexvideo.User{
-				Id: videos[i].AuthorID,
+				Id:   videos[i].AuthorID,
+				Name: userName,
 			},
-			PlayUrl:  videos[i].PlayURL,
-			CoverUrl: videos[i].CoverURL,
+			PlayUrl:       videos[i].PlayURL,
+			CoverUrl:      videos[i].CoverURL,
+			FavoriteCount: countLikes,
+			CommentCount:  countCmts,
+			IsFavorite:    like,
+			Title:         videos[i].Title,
 		})
 	}
 	resp.VideoList = videosResp
@@ -59,14 +72,42 @@ func BuildLikesResp(resp *kitexvideo.ListLikeResp, videos []*model.Video) {
 	var videosResp = make([]*kitexvideo.Video, 10)
 
 	for i := 0; i < len(resp.VideoList); i++ {
+		userName, countLikes, countCmts, like := packVideoInfo(videos, int64(i))
 		videosResp = append(videosResp, &kitexvideo.Video{
 			VideoId: videos[i].ID,
 			Author: &kitexvideo.User{
-				Id: videos[i].AuthorID,
+				Id:   videos[i].AuthorID,
+				Name: userName,
 			},
-			PlayUrl:  videos[i].PlayURL,
-			CoverUrl: videos[i].CoverURL,
+			PlayUrl:       videos[i].PlayURL,
+			CoverUrl:      videos[i].CoverURL,
+			FavoriteCount: countLikes,
+			CommentCount:  countCmts,
+			IsFavorite:    like,
+			Title:         videos[i].Title,
 		})
 	}
 	resp.VideoList = videosResp
+}
+
+func packVideoInfo(videos []*model.Video, videoIndex int64) (string, int64, int64, bool) {
+	userName, err := rpc.UserInfo(videos[videoIndex].ID)
+	if err != nil {
+		userName = "HelliWrold1" // 备用名字
+	}
+	countLikes, err := rpc.CountLikesByVideoID(videos[videoIndex].ID)
+	if err != nil {
+		countLikes = 0
+	}
+	countCmts, err := rpc.CountComments(videos[videoIndex].ID)
+	if err != nil {
+		countCmts = 0
+	}
+
+	like, err := rpc.QueryLike(videos[videoIndex].AuthorID, videos[videoIndex].ID)
+	if err != nil {
+		like = false // 默认不点赞
+	}
+
+	return userName, countLikes, countCmts, like
 }

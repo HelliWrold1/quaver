@@ -6,10 +6,9 @@ struct StatusResp{
 }
 
 struct PubReq{
-    1: required byte data
-    2: required string title(vt.min_size = "1")
-    3: required i64 author_id(vt.gt = "0")
-    4: required i64 datetime(vt.gt = "0")
+    1: required string title(vt.min_size = "1")
+    2: required i64 author_id(vt.gt = "0")
+    3: required i64 datetime(vt.gt = "0")
 }
 
 struct PubResp{
@@ -37,6 +36,7 @@ struct User {
   3: optional string avatar//用户头像
   4: optional string background_image//用户个人页顶部大图
   5: optional i64 work_count//作品数量
+//  6: required bool is_follow // true-已关注，false-未关注
 }
 
 struct ListResp{
@@ -45,7 +45,8 @@ struct ListResp{
 }
 
 struct FeedReq{
-    1: optional i64 latest_time(vt.gt = "0") // 返回的视频的最新投稿时间戳
+    1: required StatusResp status_resp
+    2: optional i64 latest_time(vt.gt = "0") // 返回的视频的最新投稿时间戳
 }
 
 struct FeedResp {
@@ -64,7 +65,7 @@ struct ListLikeResp{
     2: list<Video> video_list
 }
 
-service PublishVideo{
+service VideoService{
     PubResp PublishVideo(1:PubReq req) // 投稿
     ListResp ListVideos(1: ListReq req) // 列出登录用户的投稿视频
     FeedResp ListFeeds(1: FeedReq req) // 未登录用户也可查看

@@ -65,3 +65,23 @@ func (s *CommentServiceImpl) DeleteComment(ctx context.Context, req *comment.Del
 	resp.StatusResp = pack.BuildStatusResp(errno.Success)
 	return resp, nil
 }
+
+// CountComments implements the CommentServiceImpl interface.
+func (s *CommentServiceImpl) CountComments(ctx context.Context, req *comment.CountReq) (resp *comment.CountResp, err error) {
+	err = req.IsValid()
+	if err != nil {
+		resp.StatusResp = pack.BuildStatusResp(errno.ParamErr)
+		return resp, err
+	}
+
+	// 统计评论数
+	count, err := service.NewCountCommentsService(ctx).CountComments(req)
+	if err != nil {
+		resp.StatusResp = pack.BuildStatusResp(errno.ServiceErr)
+		return resp, err
+	}
+	resp.Count = count
+	resp.StatusResp = pack.BuildStatusResp(errno.Success)
+
+	return resp, nil
+}

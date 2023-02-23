@@ -65,3 +65,40 @@ func (s *LikeServiceImpl) ListLikes(ctx context.Context, req *like.ListReq) (res
 	resp.StatusResp = pack.BuildStatusResp(errno.Success)
 	return resp, nil
 }
+
+// CountLikes implements the LikeServiceImpl interface.
+func (s *LikeServiceImpl) CountLikes(ctx context.Context, req *like.CountReq) (resp *like.CountResp, err error) {
+	// 验证数据合法性
+	err = req.IsValid()
+	if err != nil {
+		resp.StatusResp = pack.BuildStatusResp(errno.ParamErr)
+		return resp, err
+	}
+	// 统计点赞数
+	count, err := service.NewCountLikesService(ctx).CountLikes(req)
+	if err != nil {
+		resp.StatusResp = pack.BuildStatusResp(err)
+		return resp, err
+	}
+	resp.Count = count
+	resp.StatusResp = pack.BuildStatusResp(errno.Success)
+
+	return resp, nil
+}
+
+// QueryLike implements the LikeServiceImpl interface.
+func (s *LikeServiceImpl) QueryLike(ctx context.Context, req *like.QueryReq) (resp *like.QueryResp, err error) {
+	err = req.IsValid()
+	if err != nil {
+		resp.Like = false
+		return resp, err
+	}
+
+	likeFlag, err := service.NewQueryLikeService(ctx).QueryLike(req)
+	if err != nil {
+		resp.Like = false
+		return resp, err
+	}
+	resp.Like = likeFlag
+	return resp, nil
+}

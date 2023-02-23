@@ -29,3 +29,17 @@ func DeleteLike(ctx context.Context, videoID int64, userID int64) error {
 	}
 	return nil
 }
+
+func CountLikes(ctx context.Context, videoID int64) (int64, error) {
+	q := Q.Like.WithContext(ctx)
+	return q.Where(Q.Like.VideoID.Eq(videoID)).Count()
+}
+
+func QueryLike(ctx context.Context, uid int64, vid int64) (bool, error) {
+	q := Q.Like.WithContext(ctx)
+	records, _ := q.Where(Q.Like.LikerID.Eq(uid), Q.Like.VideoID.Eq(vid), Q.Like.Delete_.Eq(1)).Find()
+	if len(records) == 0 {
+		return false, nil
+	}
+	return true, nil
+}

@@ -72,3 +72,14 @@ func (p *DeleteResp) IsValid() error {
 	}
 	return nil
 }
+func (p *CountReq) IsValid() error {
+	return nil
+}
+func (p *CountResp) IsValid() error {
+	if p.StatusResp != nil {
+		if err := p.StatusResp.IsValid(); err != nil {
+			return fmt.Errorf("filed StatusResp not valid, %w", err)
+		}
+	}
+	return nil
+}

@@ -14,6 +14,8 @@ type Client interface {
 	LikeVideo(ctx context.Context, req *like.LikeReq, callOptions ...callopt.Option) (r *like.LikeResp, err error)
 	DeleteLike(ctx context.Context, req *like.DeleteReq, callOptions ...callopt.Option) (r *like.DeleteResp, err error)
 	ListLikes(ctx context.Context, req *like.ListReq, callOptions ...callopt.Option) (r *like.ListResp, err error)
+	CountLikes(ctx context.Context, req *like.CountReq, callOptions ...callopt.Option) (r *like.CountResp, err error)
+	QueryLike(ctx context.Context, req *like.QueryReq, callOptions ...callopt.Option) (r *like.QueryResp, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -58,4 +60,14 @@ func (p *kLikeServiceClient) DeleteLike(ctx context.Context, req *like.DeleteReq
 func (p *kLikeServiceClient) ListLikes(ctx context.Context, req *like.ListReq, callOptions ...callopt.Option) (r *like.ListResp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.ListLikes(ctx, req)
+}
+
+func (p *kLikeServiceClient) CountLikes(ctx context.Context, req *like.CountReq, callOptions ...callopt.Option) (r *like.CountResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.CountLikes(ctx, req)
+}
+
+func (p *kLikeServiceClient) QueryLike(ctx context.Context, req *like.QueryReq, callOptions ...callopt.Option) (r *like.QueryResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.QueryLike(ctx, req)
 }

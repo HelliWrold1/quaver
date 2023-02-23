@@ -42,8 +42,18 @@ struct DeleteResp{
     1: required StatusResp status_resp
 }
 
+struct CountReq{
+    1: required i64 video_id
+}
+
+struct CountResp{
+    1: required StatusResp status_resp
+    2: required i64 count
+}
+
 service CommentService{
     PubResp PublishComment(1:PubReq req)
     ListResp ListComment(1:ListReq req)
     DeleteResp DeleteComment(1: DeleteReq req)
+    CountResp CountComments(1: CountReq req)
 }

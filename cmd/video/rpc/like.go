@@ -34,10 +34,28 @@ func initLike() {
 	likeClient = c
 }
 
+// QueryVideoByUserID 返回喜欢的视频列表
 func QueryVideoByUserID(ctx context.Context, uid int64) (*like.ListResp, error) {
 	resp, err := likeClient.ListLikes(ctx, &like.ListReq{UserId: uid})
 	if err != nil {
 		return nil, err
 	}
 	return resp, nil
+}
+
+// CountLikesByVideoID 返回点赞数
+func CountLikesByVideoID(vid int64) (int64, error) {
+	countResp, err := likeClient.CountLikes(context.Background(), &like.CountReq{VideoId: vid})
+	if err != nil {
+		return 0, err
+	}
+	return countResp.Count, nil
+}
+
+func QueryLike(uid int64, vid int64) (bool, error) {
+	likeResp, err := likeClient.QueryLike(context.Background(), &like.QueryReq{UserId: uid, VideoId: vid})
+	if err != nil {
+		return false, err
+	}
+	return likeResp.Like, nil
 }

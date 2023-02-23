@@ -3,7 +3,7 @@ namespace go user
 enum ErrCode{
     SuccessCode = 0
     ServiceErrCode = 10001
-    ParamErrCode = 1002
+    ParamErrCode = 10002
     UserAlreadyExistErrCode    = 10003
     AuthorizationFailedErrCode = 10004
 }
@@ -14,8 +14,8 @@ struct StatusResp{
 }
 
 struct RegisterReq{
-    1: required string username(vt.min_size = "1")
-    2: required string password(vt.min_size = "6")
+    1: required string username(vt.min_size = "1", vt.max_size = "32")
+    2: required string password(vt.min_size = "6", vt.max_size = "32")
 }
 
 struct RegisterResp{

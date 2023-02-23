@@ -23,3 +23,8 @@ func DeleteComment(ctx context.Context, cmtID int64) error {
 	}
 	return nil
 }
+
+func CountComments(ctx context.Context, videoID int64) (int64, error) {
+	q := Q.Comment.WithContext(ctx)
+	return q.Where(Q.Comment.VideoID.Eq(videoID)).Count()
+}

@@ -22,6 +22,7 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		"PublishComment": kitex.NewMethodInfo(publishCommentHandler, newCommentServicePublishCommentArgs, newCommentServicePublishCommentResult, false),
 		"ListComment":    kitex.NewMethodInfo(listCommentHandler, newCommentServiceListCommentArgs, newCommentServiceListCommentResult, false),
 		"DeleteComment":  kitex.NewMethodInfo(deleteCommentHandler, newCommentServiceDeleteCommentArgs, newCommentServiceDeleteCommentResult, false),
+		"CountComments":  kitex.NewMethodInfo(countCommentsHandler, newCommentServiceCountCommentsArgs, newCommentServiceCountCommentsResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "comment",
@@ -91,6 +92,24 @@ func newCommentServiceDeleteCommentResult() interface{} {
 	return comment.NewCommentServiceDeleteCommentResult()
 }
 
+func countCommentsHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*comment.CommentServiceCountCommentsArgs)
+	realResult := result.(*comment.CommentServiceCountCommentsResult)
+	success, err := handler.(comment.CommentService).CountComments(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newCommentServiceCountCommentsArgs() interface{} {
+	return comment.NewCommentServiceCountCommentsArgs()
+}
+
+func newCommentServiceCountCommentsResult() interface{} {
+	return comment.NewCommentServiceCountCommentsResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -126,6 +145,16 @@ func (p *kClient) DeleteComment(ctx context.Context, req *comment.DeleteReq) (r 
 	_args.Req = req
 	var _result comment.CommentServiceDeleteCommentResult
 	if err = p.c.Call(ctx, "DeleteComment", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) CountComments(ctx context.Context, req *comment.CountReq) (r *comment.CountResp, err error) {
+	var _args comment.CommentServiceCountCommentsArgs
+	_args.Req = req
+	var _result comment.CommentServiceCountCommentsResult
+	if err = p.c.Call(ctx, "CountComments", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

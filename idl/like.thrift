@@ -24,6 +24,7 @@ struct User {
   3: optional string avatar//用户头像
   4: optional string background_image//用户个人页顶部大图
   5: optional i64 work_count//作品数量
+//  6: required bool is_follow // true-已关注，false-未关注
 }
 
 struct LikeReq {
@@ -53,8 +54,28 @@ struct ListResp {
     2:required list<Video> video_list // 用户点赞视频列表
 }
 
+struct CountReq{
+    1: required i64 video_id
+}
+
+struct CountResp{
+    1: required StatusResp status_resp
+    2: required i64 count
+}
+
+struct QueryReq{
+    1: required i64 user_id
+    2: required i64 video_id
+}
+
+struct QueryResp{
+    1: required bool like
+}
+
 service LikeService{
     LikeResp LikeVideo(1: LikeReq req)
     DeleteResp DeleteLike(1: DeleteReq req)
     ListResp ListLikes(1: ListReq req)
+    CountResp CountLikes(1: CountReq req) // 统计视频点赞总数
+    QueryResp QueryLike(1: QueryReq req) // 查询是否点赞
 }

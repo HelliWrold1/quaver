@@ -80,3 +80,20 @@ func (p *ListResp) IsValid() error {
 	}
 	return nil
 }
+func (p *CountReq) IsValid() error {
+	return nil
+}
+func (p *CountResp) IsValid() error {
+	if p.StatusResp != nil {
+		if err := p.StatusResp.IsValid(); err != nil {
+			return fmt.Errorf("filed StatusResp not valid, %w", err)
+		}
+	}
+	return nil
+}
+func (p *QueryReq) IsValid() error {
+	return nil
+}
+func (p *QueryResp) IsValid() error {
+	return nil
+}

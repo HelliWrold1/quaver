@@ -1,16 +1,49 @@
 package main
 
 import (
-	like "github.com/HelliWrold1/quaver/kitex_gen/like/likevideo"
-	"log"
+	"github.com/HelliWrold1/quaver/cmd/like/dal"
+	"github.com/HelliWrold1/quaver/config"
+	"github.com/HelliWrold1/quaver/kitex_gen/like/likeservice"
+	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/cloudwego/kitex/pkg/limit"
+	"github.com/cloudwego/kitex/pkg/rpcinfo"
+	"github.com/cloudwego/kitex/server"
+	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
+	etcd "github.com/kitex-contrib/registry-etcd"
+	"net"
 )
 
-func main() {
-	svr := like.NewServer(new(LikeVideoImpl))
+func Init() {
+	dal.Init()
+	klog.SetLogger(kitexlogrus.NewLogger())
+	klog.SetLevel(klog.LevelInfo)
+}
 
-	err := svr.Run()
+func main() {
+	conf := config.NewQuaverConfig()
+	conf.LocalConfigInit()
+	r, err := etcd.NewEtcdRegistry([]string{conf.EtcdConfig.Address}) // 创建一个基于 etcd 的注册表
+	if err != nil {
+		klog.Fatal(err)
+	}
+	addr, err := net.ResolveTCPAddr("tcp", conf.ServerConfig.LikeServiceAddr) // 返回 TCP 端点的地址
+	if err != nil {
+		klog.Fatal(err)
+	}
+	Init()
+
+	svr := likeservice.NewServer(new(LikeServiceImpl),
+		server.WithServiceAddr(addr), // 设置服务器监听地址
+		server.WithRegistry(r),       // 设置一个 Registry 来注册服务
+		server.WithLimit(&limit.Option{MaxConnections: 1000, MaxQPS: 100}), // 设置并发连接数或最大 QPS 的限制，此选项不稳定
+		server.WithMuxTransport(), // 指定传输类型为 mux
+		//  为 RPCIInfo 中的客户端端点提供初始信息
+		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: conf.ServerConfig.LikeServiceName}),
+	)
+
+	err = svr.Run()
 
 	if err != nil {
-		log.Println(err.Error())
+		klog.Fatal(err)
 	}
 }

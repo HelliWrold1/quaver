@@ -80,13 +80,14 @@ func (config *QuaverConfig) LocalConfigInit() {
 	if err != nil {
 		panic(err)
 	}
+	// 反序列化到结构体中
 	err = viper.Unmarshal(config)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
+	// 监听配置文件变化，随时反序列化
 	viper.WatchConfig()
 	viper.OnConfigChange(func(in fsnotify.Event) {
-		fmt.Println("config changed")
 		err := viper.Unmarshal(config)
 		if err != nil {
 			fmt.Println(err.Error())

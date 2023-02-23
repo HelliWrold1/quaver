@@ -22,6 +22,8 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		"LikeVideo":  kitex.NewMethodInfo(likeVideoHandler, newLikeServiceLikeVideoArgs, newLikeServiceLikeVideoResult, false),
 		"DeleteLike": kitex.NewMethodInfo(deleteLikeHandler, newLikeServiceDeleteLikeArgs, newLikeServiceDeleteLikeResult, false),
 		"ListLikes":  kitex.NewMethodInfo(listLikesHandler, newLikeServiceListLikesArgs, newLikeServiceListLikesResult, false),
+		"CountLikes": kitex.NewMethodInfo(countLikesHandler, newLikeServiceCountLikesArgs, newLikeServiceCountLikesResult, false),
+		"QueryLike":  kitex.NewMethodInfo(queryLikeHandler, newLikeServiceQueryLikeArgs, newLikeServiceQueryLikeResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "like",
@@ -91,6 +93,42 @@ func newLikeServiceListLikesResult() interface{} {
 	return like.NewLikeServiceListLikesResult()
 }
 
+func countLikesHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*like.LikeServiceCountLikesArgs)
+	realResult := result.(*like.LikeServiceCountLikesResult)
+	success, err := handler.(like.LikeService).CountLikes(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newLikeServiceCountLikesArgs() interface{} {
+	return like.NewLikeServiceCountLikesArgs()
+}
+
+func newLikeServiceCountLikesResult() interface{} {
+	return like.NewLikeServiceCountLikesResult()
+}
+
+func queryLikeHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*like.LikeServiceQueryLikeArgs)
+	realResult := result.(*like.LikeServiceQueryLikeResult)
+	success, err := handler.(like.LikeService).QueryLike(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newLikeServiceQueryLikeArgs() interface{} {
+	return like.NewLikeServiceQueryLikeArgs()
+}
+
+func newLikeServiceQueryLikeResult() interface{} {
+	return like.NewLikeServiceQueryLikeResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -126,6 +164,26 @@ func (p *kClient) ListLikes(ctx context.Context, req *like.ListReq) (r *like.Lis
 	_args.Req = req
 	var _result like.LikeServiceListLikesResult
 	if err = p.c.Call(ctx, "ListLikes", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) CountLikes(ctx context.Context, req *like.CountReq) (r *like.CountResp, err error) {
+	var _args like.LikeServiceCountLikesArgs
+	_args.Req = req
+	var _result like.LikeServiceCountLikesResult
+	if err = p.c.Call(ctx, "CountLikes", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) QueryLike(ctx context.Context, req *like.QueryReq) (r *like.QueryResp, err error) {
+	var _args like.LikeServiceQueryLikeArgs
+	_args.Req = req
+	var _result like.LikeServiceQueryLikeResult
+	if err = p.c.Call(ctx, "QueryLike", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
