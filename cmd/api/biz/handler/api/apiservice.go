@@ -7,7 +7,6 @@ import (
 	api "github.com/HelliWrold1/quaver/cmd/api/biz/model/api"
 	"github.com/HelliWrold1/quaver/cmd/api/biz/mw"
 	"github.com/HelliWrold1/quaver/cmd/api/biz/rpc"
-	"github.com/HelliWrold1/quaver/kitex_gen/like"
 	"github.com/HelliWrold1/quaver/kitex_gen/user"
 	"github.com/HelliWrold1/quaver/pkg/errno"
 	"github.com/cloudwego/hertz/pkg/app"
@@ -75,27 +74,8 @@ func LikeAction(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-	v, _ := c.Get("id")
-	var likeResp like.LikeResp
-	var deleteResp like.DeleteResp
-	if req.ActionType == 1 { // ==1点赞
-		likeResp, err := rpc.LikeVideo(context.Background(), &like.LikeReq{
-			UserId:  v.(*api.User).Id,
-			VideoId: req.VideoID,
-		})
-	}
-	else if req.ActionType == 2 {
-		deleteResp, err := rpc.DeleteLike(context.Background(), &like.DeleteReq{
-			UserId:  v.(*api.User).Id,
-			VideoId: req.VideoID,
-		})
-	}
-	if
+	//v, _ := c.Get("id")
 
-	SendResponse(c, errno.Success, utils.H{
-		"status_code": 0,
-	})
-	c.JSON(consts.StatusOK, resp.Baseresp)
 }
 
 // FavouriteList .
