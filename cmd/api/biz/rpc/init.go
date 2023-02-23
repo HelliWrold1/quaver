@@ -17,4 +17,7 @@ package rpc
 
 func Init() {
 	initUser()
+	initLike()
+	initVideo()
+	initComment()
 }

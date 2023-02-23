@@ -17,7 +17,7 @@ func Init() {
 	// 设置日志
 	hlog.SetLogger(hertzlogrus.NewLogger())
 	// 设置日志级别
-	hlog.SetLevel(hlog.LevelInfo)
+	hlog.SetLevel(hlog.LevelTrace)
 }
 
 func main() {

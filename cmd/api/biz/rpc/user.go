@@ -37,22 +37,16 @@ func initUser() {
 	if err != nil {
 		panic(err)
 	}
-	//provider.NewOpenTelemetryProvider(
-	//	provider.WithServiceName(conf.ApiServiceName),
-	//	provider.WithExportEndpoint(conf.ExportEndpoint),
-	//	provider.WithInsecure(),
-	//)
 	// 查找成功则生成一个客户端对象
 	c, err := userservice.NewClient(
-		conf.UserServiceName,
+		conf.ServerConfig.UserServiceName,
 		client.WithResolver(r),
 		client.WithMuxConnection(1),
 		// 对当前client增加一个中间件，在service熔断和超时中间件之后执行
 		client.WithMiddleware(mw.CommonMiddleware),
 		// 对当前client增加一个中间件，在服务发现，负载均衡之后执行
 		client.WithInstanceMW(mw.ClientMiddleware),
-		//client.WithSuite(tracing.NewClientSuite()),
-		client.WithClientBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: conf.ApiServiceName}),
+		client.WithClientBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: conf.ServerConfig.UserServiceName}),
 	)
 	if err != nil {
 		panic(err)
@@ -62,7 +56,7 @@ func initUser() {
 
 // CreateUser create user info
 
-func UserRegister(ctx context.Context, req *user.RegisterReq) (resp *user.RegisterResp, error error) {
+func UserRegister(ctx context.Context, req *user.RegisterReq) (*user.RegisterResp, error) {
 	resp, err := userClient.UserRegister(ctx, req)
 	if err != nil {
 		return resp, err
@@ -71,7 +65,7 @@ func UserRegister(ctx context.Context, req *user.RegisterReq) (resp *user.Regist
 }
 
 // UserQuery QueryUser
-func UserQuery(ctx context.Context, req *user.InfoReq) (resp *user.InfoResp, error error) {
+func UserQuery(ctx context.Context, req *user.InfoReq) (*user.InfoResp, error) {
 	resp, err := userClient.UserInfo(ctx, req)
 	if err != nil {
 		return resp, err
@@ -79,7 +73,7 @@ func UserQuery(ctx context.Context, req *user.InfoReq) (resp *user.InfoResp, err
 	return resp, nil
 }
 
-func UserLogin(ctx context.Context, req *user.LoginReq) (resp *user.LoginResp, error error) {
+func UserLogin(ctx context.Context, req *user.LoginReq) (*user.LoginResp, error) {
 	resp, err := userClient.UserLogin(ctx, req)
 	if err != nil {
 		return resp, err
