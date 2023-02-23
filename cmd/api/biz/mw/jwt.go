@@ -86,17 +86,21 @@ func InitJWT() {
 		},
 		// 设置登录的响应函数
 		LoginResponse: func(ctx context.Context, c *app.RequestContext, code int, token string, expire time.Time) {
-			c.JSON(http.StatusOK, utils.H{
-				"code":   errno.Success.ErrCode,
-				"token":  token,
-				"expire": expire.Format(time.RFC3339),
-			})
+			resp, err := JwtMiddleware.Authenticator(ctx, c)
+			if err == nil {
+				c.JSON(http.StatusOK, utils.H{
+					"status_code": errno.Success.ErrCode,
+					"status_msg":  "success",
+					"token":       token,
+					"user_id":     resp.(*user.LoginResp).UserId,
+				})
+			}
 		},
 		// 用于设置jwt授权失败后的响应函数
 		Unauthorized: func(ctx context.Context, c *app.RequestContext, code int, message string) {
 			c.JSON(http.StatusOK, utils.H{
-				"code":    errno.AuthorizationFailedErr.ErrCode,
-				"message": message,
+				"status_code": errno.AuthorizationFailedErr.ErrCode,
+				"message":     message,
 			})
 		},
 		// 一旦jwt校验流程产生错误，对应err将以参数的形式传递给HTTPStatusMessageFunc，由其提取出需要响应的错误信息

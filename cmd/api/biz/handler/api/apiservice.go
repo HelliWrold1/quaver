@@ -5,9 +5,12 @@ package api
 import (
 	"context"
 	api "github.com/HelliWrold1/quaver/cmd/api/biz/model/api"
+	"github.com/HelliWrold1/quaver/cmd/api/biz/mw"
 	"github.com/HelliWrold1/quaver/cmd/api/biz/rpc"
 	"github.com/HelliWrold1/quaver/kitex_gen/user"
+	"github.com/HelliWrold1/quaver/pkg/errno"
 	"github.com/cloudwego/hertz/pkg/app"
+	"github.com/cloudwego/hertz/pkg/common/utils"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 )
 
@@ -18,52 +21,47 @@ func UserRegister(ctx context.Context, c *app.RequestContext) {
 	var req api.UserRegisterRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		SendResponse(c, errno.ConvertErr(err), nil)
 		return
 	}
-	userRegisterResp := new(api.UserRegisterResponse)
-	resp, err := rpc.UserRegister(context.Background(), &user.RegisterReq{
+	_, err = rpc.UserRegister(context.Background(), &user.RegisterReq{
 		Username: req.Username,
 		Password: req.Password,
 	})
 	if err != nil {
-		userRegisterResp.Baseresp.StatusCode = int64(resp.StatusResp.GetStatusCode())
-		userRegisterResp.Baseresp.StatusMessage = resp.StatusResp.GetStatusMsg()
+		SendResponse(c, errno.ConvertErr(err), nil)
 	}
 
-	c.JSON(consts.StatusOK, resp)
+	// 签发token
+	mw.JwtMiddleware.LoginHandler(ctx, c)
 }
 
 // UserLogin .
 // @router /douyin/user/register [POST]
 func UserLogin(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req api.UserLoginRequest
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(api.UserLoginResponse)
-
-	c.JSON(consts.StatusOK, resp)
+	mw.JwtMiddleware.LoginHandler(ctx, c)
 }
 
 // UserInfo .
 // @router douyin/user/ [GET]
-func UserInfo(ctx context.Context, c *app.RequestContext) {
+func UserInfo(_ context.Context, c *app.RequestContext) {
 	var err error
 	var req api.UserInfoRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		SendResponse(c, errno.ConvertErr(err), nil)
 		return
 	}
-
-	resp := new(api.UserInfoResponse)
-
-	c.JSON(consts.StatusOK, resp)
+	resp, err := rpc.UserQuery(context.Background(), &user.InfoReq{
+		UserId: req.UserID,
+	})
+	if err != nil {
+		SendResponse(c, errno.ConvertErr(err), nil)
+	}
+	SendResponse(c, errno.Success, utils.H{
+		"status_code": 0,
+		"user":        resp,
+	})
 }
 
 // LikeAction .
