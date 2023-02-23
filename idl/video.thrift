@@ -5,18 +5,19 @@ struct StatusResp{
     2:optional string status_msg
 }
 
-struct PubVideoReq{
+struct PubReq{
     1: required byte data
-    2: required string title
-    3: required i64 author_id
+    2: required string title(vt.min_size = "1")
+    3: required i64 author_id(vt.gt = "0")
+    4: required i64 datetime(vt.gt = "0")
 }
 
-struct PubVideoResp{
+struct PubResp{
     1: required StatusResp status_resp
 }
 
-struct ListVideoReq{
-    1: required i64 user_id
+struct ListReq{
+    1: required i64 user_id(vt.gt = "0")
 }
 
 struct Video {
@@ -31,30 +32,40 @@ struct Video {
 }
 
 struct User {
-  1: required i64 id = 1; // 用户id
-  2: required string name = 2; // 用户名称
-  3: optional string avatar = 6; //用户头像
-  4: optional string background_image = 7; //用户个人页顶部大图
-  5: optional i64 work_count = 10; //作品数量
+  1: required i64 id// 用户id
+  2: required string name// 用户名称
+  3: optional string avatar//用户头像
+  4: optional string background_image//用户个人页顶部大图
+  5: optional i64 work_count//作品数量
 }
 
-struct ListVideoResp{
+struct ListResp{
     1: required StatusResp status_resp
 }
 
 struct FeedReq{
-    1: optional i64 latest_time // 返回的视频的最新投稿时间戳
+    1: optional i64 latest_time(vt.gt = "0") // 返回的视频的最新投稿时间戳
 }
 
 struct FeedResp {
-  required i32 status_code // 状态码，0-成功，其他值-失败
-  optional string status_msg // 返回状态描述
-  required list<Video>  video_list // 视频列表
-  optional i64  next_time = 4; // 本次返回的视频中，发布最早的时间，作为下次请求时的latest_time
+  1: required i32 status_code // 状态码，0-成功，其他值-失败
+  2: optional string status_msg // 返回状态描述
+  3:required list<Video>  video_list // 视频列表
+  4: optional i64  next_time // 本次返回的视频中，发布最早的时间，作为下次请求时的latest_time
+}
+
+struct ListLikeReq{
+    1: required i64 user_id
+}
+
+struct ListLikeResp{
+    1: required StatusResp status_resp
+    2: list<Video> video_list
 }
 
 service PublishVideo{
-    PubVideoResp PublishVideo(1:PubVideoReq req)
-    ListVideoReq ListVideos(1: ListVideoReq req) // 仅仅是列出该用户的视频
-    FeedResp ListFeeds(1: FeedReq req)
+    PubResp PublishVideo(1:PubReq req) // 投稿
+    ListResp ListVideos(1: ListReq req) // 列出登录用户的投稿视频
+    FeedResp ListFeeds(1: FeedReq req) // 未登录用户也可查看
+    ListLikeResp ListLikes(1: ListLikeReq req) // 列出登录用户点赞的视频
 }

@@ -33,23 +33,34 @@ func (s *CommentServiceImpl) PublishComment(ctx context.Context, req *comment.Pu
 // ListComment implements the CommentServiceImpl interface.
 func (s *CommentServiceImpl) ListComment(ctx context.Context, req *comment.ListReq) (resp *comment.ListResp, err error) {
 	resp = new(comment.ListResp)
+	// 验证数据合法性
 	err = resp.IsValid()
 	if err != nil {
 		resp.StatusResp = pack.BuildStatusResp(errno.ParamErr)
 	}
+	// 列出评论
 	comments, err := service.NewListCommentsService(ctx).ListComments(req)
 	if err != nil {
 		resp.StatusResp = pack.BuildStatusResp(err)
 	}
 	pack.BuildCommentsResp(resp, comments)
+	resp.StatusResp = pack.BuildStatusResp(errno.Success)
 	return resp, nil
 }
 
 // DeleteComment implements the CommentServiceImpl interface.
 func (s *CommentServiceImpl) DeleteComment(ctx context.Context, req *comment.DeleteReq) (resp *comment.DeleteResp, err error) {
+	resp = new(comment.DeleteResp)
+	// 验证数据合法性
+	err = req.IsValid()
+	if err != nil {
+		resp.StatusResp = pack.BuildStatusResp(errno.ParamErr)
+	}
+	// 删除评论
 	err = service.NewDeleteCommentsService(ctx).DeleteComment(req)
 	if err != nil {
 		resp.StatusResp = pack.BuildStatusResp(err)
+		return resp, err
 	}
 	resp.StatusResp = pack.BuildStatusResp(errno.Success)
 	return resp, nil

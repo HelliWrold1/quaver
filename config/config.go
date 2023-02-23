@@ -23,6 +23,10 @@ type ServerConfig struct {
 	UserServiceAddr    string `mapstructure:"userServiceAddr"`
 	CommentServiceName string `mapstructure:"CommentServiceName"`
 	CommentServiceAddr string `mapstructure:"CommentServiceAddr"`
+	VideoServiceName   string `mapstructure:"videoServiceName"`
+	VideoServiceAddr   string `mapstructure:"videoServiceAddr"`
+	LikeServiceName    string `mapstructure:"likeServiceName"`
+	LikeServiceAddr    string `mapstructure:"likeServiceAddr"`
 	ApiServiceName     string `mapstructure:"apiServiceName"`
 	ApiServiceAddr     string `mapstructure:"apiServiceAddr"`
 	ExportEndpoint     string `mapstructure:"exportEndpoint"`
