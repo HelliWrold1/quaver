@@ -53,7 +53,7 @@ struct ListResp {
     2:required list<Video> video_list // 用户点赞视频列表
 }
 
-service LikeVideo{
+service LikeService{
     LikeResp LikeVideo(1: LikeReq req)
     DeleteResp DeleteLike(1: DeleteReq req)
     ListResp ListLikes(1: ListReq req)

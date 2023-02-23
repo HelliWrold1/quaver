@@ -24,7 +24,7 @@ func main() {
 	Init()
 	//tracer, cfg := tracing.NewServerTracer()
 	h := server.New(
-		server.WithHostPorts(":8081"),
+		server.WithHostPorts("127.0.0.1:8081"),
 		server.WithHandleMethodNotAllowed(true), // coordinate with NoMethod
 		//tracer,
 	)
@@ -32,6 +32,6 @@ func main() {
 	//pprof.Register(h)
 	// use otel mw
 	//h.Use(tracing.ServerMiddleware(cfg))
-	//register(h)
+	register(h)
 	h.Spin()
 }

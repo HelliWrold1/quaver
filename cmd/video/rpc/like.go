@@ -4,15 +4,14 @@ import (
 	"context"
 	"github.com/HelliWrold1/quaver/config"
 	"github.com/HelliWrold1/quaver/kitex_gen/like"
-	"github.com/HelliWrold1/quaver/kitex_gen/like/likevideo"
-	"github.com/HelliWrold1/quaver/kitex_gen/user"
+	"github.com/HelliWrold1/quaver/kitex_gen/like/likeservice"
 	"github.com/HelliWrold1/quaver/pkg/mw"
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	etcd "github.com/kitex-contrib/registry-etcd"
 )
 
-var likeClient likevideo.Client
+var likeClient likeservice.Client
 
 func initLike() {
 	conf := config.NewQuaverConfig()
@@ -26,7 +25,7 @@ func initLike() {
 	//	provider.WithExportEndpoint(conf.ServerConfig.ExportEndpoint),
 	//	provider.WithInsecure(),
 	//)
-	c, err := likevideo.NewClient(
+	c, err := likeservice.NewClient(
 		conf.ServerConfig.LikeServiceName, // DestService
 		client.WithResolver(r),
 		client.WithMuxConnection(1),
@@ -41,8 +40,8 @@ func initLike() {
 	likeClient = c
 }
 
-func QueryVideoID(ctx context.Context, req *like.ListReq) (*user.InfoResp, error) {
-	resp, err := likeClient.ListLikes(ctx, req})
+func QueryVideoID(ctx context.Context, req *like.ListReq) (*like.ListResp, error) {
+	resp, err := likeClient.ListLikes(ctx, req)
 	if err != nil {
 		return resp, nil
 	}

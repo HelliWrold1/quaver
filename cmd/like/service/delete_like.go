@@ -14,6 +14,6 @@ func NewDeleteLikeService(ctx context.Context) *DeleteLikeService {
 	return &DeleteLikeService{ctx: ctx}
 }
 
-func (s *DeleteLikeService) DeleteComment(req *like.DeleteReq) error {
+func (s *DeleteLikeService) DeleteLike(req *like.DeleteReq) error {
 	return db.DeleteLike(s.ctx, req.VideoId, req.UserId)
 }

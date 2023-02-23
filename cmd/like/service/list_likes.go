@@ -16,7 +16,7 @@ func NewListLikesService(ctx context.Context) *ListLikesService {
 	return &ListLikesService{ctx: ctx}
 }
 
-func (s *ListLikesService) ListComments(req *like.ListReq) ([]*model.Like, error) {
+func (s *ListLikesService) ListLikes(req *like.ListReq) ([]*model.Like, error) {
 	likes, _ := db.ListLikes(s.ctx, req.UserId)
 	if len(likes) == 0 {
 		return nil, gorm.ErrRecordNotFound
