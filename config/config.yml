@@ -21,7 +21,7 @@ mysql:
   port: 3306
   database: quaver
   username: root
-  password: root
+  password: Chenfeng20020106
   charset: utf8mb4
   maxIdleConns : 28  # 空闲连接池最连接数
   maxOpenConns : 100 # 最大打开连接数
