@@ -24,10 +24,11 @@ func main() {
 	Init()
 	//tracer, cfg := tracing.NewServerTracer()
 	h := server.New(
-		server.WithHostPorts(":8081"),
+		server.WithHostPorts(":8082"),
 		server.WithHandleMethodNotAllowed(true), // coordinate with NoMethod
 		//tracer,
 	)
+
 	// use pprof mw
 	//pprof.Register(h)
 	// use otel mw

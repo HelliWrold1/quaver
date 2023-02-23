@@ -4,6 +4,7 @@ go 1.16
 
 require (
 	github.com/apache/thrift v0.18.0
+	github.com/choleraehyq/pid v0.0.16 // indirect
 	github.com/cloudwego/hertz v0.4.2
 	github.com/cloudwego/kitex v0.4.4
 	github.com/fsnotify/fsnotify v1.6.0

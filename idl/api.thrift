@@ -134,7 +134,7 @@ struct VideoPublishListResponse{
 
 service Apiservice{
     UserRegisterResponse  UserRegister(1:UserRegisterRequest req) (api.post="/douyin/user/register")
-    UserLoginResponse UserLogin(1:UserLoginRequest req) (api.post="/douyin/user/register")
+    UserLoginResponse UserLogin(1:UserLoginRequest req) (api.post="/douyin/user/login")
     UserInfoResponse UserInfo(1:UserInfoRequest req) (api.get="douyin/user/")
     FavouriteActionResponse LikeAction(1:FavouriteActionRequest req) (api.post="/douyin/favorite/action/")
     FavouriteListResponse FavouriteList(1:FavouriteListRequest req) (api.post="/douyin/favorite/list/")

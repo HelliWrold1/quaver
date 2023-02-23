@@ -64,8 +64,8 @@ func NewQuaverConfig() *QuaverConfig {
 
 func (config *QuaverConfig) LocalConfigInit() {
 	viper.AutomaticEnv()
-	goPath := viper.GetString("GOPATH")                                // 获取环境变量
-	configPath := goPath + "/src/github.com/HelliWrold1/quaver/config" // configPath是配置文件的绝对路径
+	//goPath := viper.GetString("GOPATH")                                // 获取环境变量
+	configPath := "/Users/fengdacrcy/Desktop/quater_chen/quaver/config" // configPath是配置文件的绝对路径
 	viper.SetConfigName("config")
 	viper.SetConfigType("yml")
 	viper.AddConfigPath(configPath)
