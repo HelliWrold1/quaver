@@ -3,7 +3,7 @@
 package Api
 
 import (
-	api "github.com/HelliWrold1/quaver/cmd/api/biz/handler/api"
+	"github.com/HelliWrold1/quaver/cmd/api/biz/handler/api"
 	"github.com/cloudwego/hertz/pkg/app/server"
 )
 

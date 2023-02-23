@@ -37,7 +37,7 @@ func UserRegister(ctx context.Context, c *app.RequestContext) {
 }
 
 // UserLogin .
-// @router /douyin/user/register [POST]
+// @router /douyin/user/login [POST]
 func UserLogin(ctx context.Context, c *app.RequestContext) {
 	mw.JwtMiddleware.LoginHandler(ctx, c)
 }

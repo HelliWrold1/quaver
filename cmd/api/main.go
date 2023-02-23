@@ -24,15 +24,19 @@ func main() {
 	Init()
 	//tracer, cfg := tracing.NewServerTracer()
 	h := server.New(
-		server.WithHostPorts(":8082"),
+		server.WithHostPorts(":8081"),
 		server.WithHandleMethodNotAllowed(true), // coordinate with NoMethod
 		//tracer,
 	)
+	//h.GET("ping2", func(c context.Context, ctx *app.RequestContext) {
+	//	ctx.JSON(consts.StatusOK, utils.H{"message": "pong1"})
+	//})
 
 	// use pprof mw
 	//pprof.Register(h)
 	// use otel mw
 	//h.Use(tracing.ServerMiddleware(cfg))
 	//register(h)
+	register(h)
 	h.Spin()
 }
