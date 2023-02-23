@@ -7,6 +7,8 @@ import (
 
 // LikeVideo 点赞视频
 func LikeVideo(ctx context.Context, c *model.Like) error {
+	var del int64 = 0
+	c.Delete_ = &del
 	q := Q.Like.WithContext(ctx)
 	return q.Create(c)
 }

@@ -17,7 +17,6 @@ package rpc
 
 import (
 	"context"
-	"fmt"
 	"github.com/HelliWrold1/quaver/config"
 	"github.com/HelliWrold1/quaver/kitex_gen/user"
 	"github.com/HelliWrold1/quaver/kitex_gen/user/userservice"
@@ -71,7 +70,7 @@ func UserRegister(ctx context.Context, req *user.RegisterReq) (resp *user.Regist
 	return resp, nil
 }
 
-// QueryUser
+// UserQuery QueryUser
 func UserQuery(ctx context.Context, req *user.InfoReq) (resp *user.InfoResp, error error) {
 	resp, err := userClient.UserInfo(ctx, req)
 	if err != nil {
@@ -82,8 +81,6 @@ func UserQuery(ctx context.Context, req *user.InfoReq) (resp *user.InfoResp, err
 
 func UserLogin(ctx context.Context, req *user.LoginReq) (resp *user.LoginResp, error error) {
 	resp, err := userClient.UserLogin(ctx, req)
-	fmt.Println("------", err.Error())
-	fmt.Println("----------", resp)
 	if err != nil {
 		return resp, err
 	}

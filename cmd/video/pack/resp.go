@@ -40,12 +40,23 @@ func BuildPubVideoResp(resp *kitexvideo.ListResp, videos []*model.Video) {
 
 // BuildFeedsResp 打包推流列表
 func BuildFeedsResp(resp *kitexvideo.FeedResp, videos []*model.Video) {
-	var videosResp = make([]*kitexvideo.Video, 10)
-	videoCount := len(resp.VideoList)
+	var videosResp = make([]*kitexvideo.Video, 30)
 
-	if videoCount >= 30 {
-		videoCount = 30
+	for i := 0; i < len(resp.VideoList); i++ {
+		videosResp = append(videosResp, &kitexvideo.Video{
+			VideoId: videos[i].ID,
+			Author: &kitexvideo.User{
+				Id: videos[i].AuthorID,
+			},
+			PlayUrl:  videos[i].PlayURL,
+			CoverUrl: videos[i].CoverURL,
+		})
 	}
+	resp.VideoList = videosResp
+}
+
+func BuildLikesResp(resp *kitexvideo.ListLikeResp, videos []*model.Video) {
+	var videosResp = make([]*kitexvideo.Video, 10)
 
 	for i := 0; i < len(resp.VideoList); i++ {
 		videosResp = append(videosResp, &kitexvideo.Video{

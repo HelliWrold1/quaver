@@ -55,7 +55,7 @@ func (s *LikeServiceImpl) ListLikes(ctx context.Context, req *like.ListReq) (res
 		resp.StatusResp = pack.BuildStatusResp(errno.ParamErr)
 		return resp, err
 	}
-	// 列出喜欢的视频
+	// 列出喜欢的视频id
 	likes, err := service.NewListLikesService(ctx).ListLikes(req)
 	if err != nil {
 		resp.StatusResp = pack.BuildStatusResp(err)
