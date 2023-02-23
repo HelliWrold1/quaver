@@ -41,6 +41,7 @@ struct User {
 
 struct ListResp{
     1: required StatusResp status_resp
+    2: required list<Video> video_list
 }
 
 struct FeedReq{

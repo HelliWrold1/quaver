@@ -2085,6 +2085,7 @@ func (p *User) Field5DeepEqual(src *int64) bool {
 
 type ListResp struct {
 	StatusResp *StatusResp `thrift:"status_resp,1,required" frugal:"1,required,StatusResp" json:"status_resp"`
+	VideoList  []*Video    `thrift:"video_list,2,required" frugal:"2,required,list<Video>" json:"video_list"`
 }
 
 func NewListResp() *ListResp {
@@ -2103,12 +2104,20 @@ func (p *ListResp) GetStatusResp() (v *StatusResp) {
 	}
 	return p.StatusResp
 }
+
+func (p *ListResp) GetVideoList() (v []*Video) {
+	return p.VideoList
+}
 func (p *ListResp) SetStatusResp(val *StatusResp) {
 	p.StatusResp = val
+}
+func (p *ListResp) SetVideoList(val []*Video) {
+	p.VideoList = val
 }
 
 var fieldIDToName_ListResp = map[int16]string{
 	1: "status_resp",
+	2: "video_list",
 }
 
 func (p *ListResp) IsSetStatusResp() bool {
@@ -2120,6 +2129,7 @@ func (p *ListResp) Read(iprot thrift.TProtocol) (err error) {
 	var fieldTypeId thrift.TType
 	var fieldId int16
 	var issetStatusResp bool = false
+	var issetVideoList bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -2146,6 +2156,17 @@ func (p *ListResp) Read(iprot thrift.TProtocol) (err error) {
 					goto SkipFieldError
 				}
 			}
+		case 2:
+			if fieldTypeId == thrift.LIST {
+				if err = p.ReadField2(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetVideoList = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
 		default:
 			if err = iprot.Skip(fieldTypeId); err != nil {
 				goto SkipFieldError
@@ -2162,6 +2183,11 @@ func (p *ListResp) Read(iprot thrift.TProtocol) (err error) {
 
 	if !issetStatusResp {
 		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetVideoList {
+		fieldId = 2
 		goto RequiredFieldNotSetError
 	}
 	return nil
@@ -2190,6 +2216,26 @@ func (p *ListResp) ReadField1(iprot thrift.TProtocol) error {
 	return nil
 }
 
+func (p *ListResp) ReadField2(iprot thrift.TProtocol) error {
+	_, size, err := iprot.ReadListBegin()
+	if err != nil {
+		return err
+	}
+	p.VideoList = make([]*Video, 0, size)
+	for i := 0; i < size; i++ {
+		_elem := NewVideo()
+		if err := _elem.Read(iprot); err != nil {
+			return err
+		}
+
+		p.VideoList = append(p.VideoList, _elem)
+	}
+	if err := iprot.ReadListEnd(); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (p *ListResp) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("ListResp"); err != nil {
@@ -2198,6 +2244,10 @@ func (p *ListResp) Write(oprot thrift.TProtocol) (err error) {
 	if p != nil {
 		if err = p.writeField1(oprot); err != nil {
 			fieldId = 1
+			goto WriteFieldError
+		}
+		if err = p.writeField2(oprot); err != nil {
+			fieldId = 2
 			goto WriteFieldError
 		}
 
@@ -2236,6 +2286,31 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
+func (p *ListResp) writeField2(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("video_list", thrift.LIST, 2); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteListBegin(thrift.STRUCT, len(p.VideoList)); err != nil {
+		return err
+	}
+	for _, v := range p.VideoList {
+		if err := v.Write(oprot); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteListEnd(); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
+}
+
 func (p *ListResp) String() string {
 	if p == nil {
 		return "<nil>"
@@ -2252,6 +2327,9 @@ func (p *ListResp) DeepEqual(ano *ListResp) bool {
 	if !p.Field1DeepEqual(ano.StatusResp) {
 		return false
 	}
+	if !p.Field2DeepEqual(ano.VideoList) {
+		return false
+	}
 	return true
 }
 
@@ -2259,6 +2337,19 @@ func (p *ListResp) Field1DeepEqual(src *StatusResp) bool {
 
 	if !p.StatusResp.DeepEqual(src) {
 		return false
+	}
+	return true
+}
+func (p *ListResp) Field2DeepEqual(src []*Video) bool {
+
+	if len(p.VideoList) != len(src) {
+		return false
+	}
+	for i, v := range p.VideoList {
+		_src := src[i]
+		if !v.DeepEqual(_src) {
+			return false
+		}
 	}
 	return true
 }

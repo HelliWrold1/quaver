@@ -39,6 +39,7 @@ func initUser() {
 	}
 	userClient = c
 }
+
 func UserInfo(ctx context.Context, req *user.InfoReq) (*user.InfoResp, error) {
 	resp, err := userClient.UserInfo(ctx, req)
 	if err != nil {

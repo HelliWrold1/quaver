@@ -16,6 +16,7 @@ func NewPublishVideoService(ctx context.Context) *PublishVideoService {
 	return &PublishVideoService{ctx: ctx}
 }
 
+// PublishVideo 发布视频，需要调用文件服务器获取视频url和封面url
 func (s *PublishVideoService) PublishVideo(req *video.PubReq) error {
 	// TODO 这里上传视频文件
 	return db.PublishVideo(s.ctx, &model.Video{

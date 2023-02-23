@@ -59,8 +59,9 @@ func (s *LikeServiceImpl) ListLikes(ctx context.Context, req *like.ListReq) (res
 	likes, err := service.NewListLikesService(ctx).ListLikes(req)
 	if err != nil {
 		resp.StatusResp = pack.BuildStatusResp(err)
+		return nil, err
 	}
-
+	pack.BuildLikesResp(resp, likes)
 	resp.StatusResp = pack.BuildStatusResp(errno.Success)
-	return
+	return resp, nil
 }

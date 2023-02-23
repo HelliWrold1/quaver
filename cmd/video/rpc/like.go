@@ -20,18 +20,12 @@ func initLike() {
 	if err != nil {
 		panic(err)
 	}
-	//provider.NewOpenTelemetryProvider(
-	//	provider.WithServiceName(conf.ServerConfig.UserServiceName),
-	//	provider.WithExportEndpoint(conf.ServerConfig.ExportEndpoint),
-	//	provider.WithInsecure(),
-	//)
 	c, err := likeservice.NewClient(
 		conf.ServerConfig.LikeServiceName, // DestService
 		client.WithResolver(r),
 		client.WithMuxConnection(1),
 		client.WithMiddleware(mw.CommonMiddleware),
 		client.WithInstanceMW(mw.ClientMiddleware),
-		//client.WithSuite(tracing.NewClientSuite()),
 		client.WithClientBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: conf.ServerConfig.LikeServiceName}),
 	)
 	if err != nil {
@@ -40,10 +34,10 @@ func initLike() {
 	likeClient = c
 }
 
-func QueryVideoID(ctx context.Context, req *like.ListReq) (*like.ListResp, error) {
-	resp, err := likeClient.ListLikes(ctx, req)
+func QueryVideoByUserID(ctx context.Context, uid int64) (*like.ListResp, error) {
+	resp, err := likeClient.ListLikes(ctx, &like.ListReq{UserId: uid})
 	if err != nil {
-		return resp, nil
+		return nil, err
 	}
-	return resp, err
+	return resp, nil
 }

@@ -17,6 +17,7 @@ func NewListFeedsService(ctx context.Context) *ListFeedsService {
 	return &ListFeedsService{ctx: ctx}
 }
 
+// ListFeeds 通过最新视频时间找到其之前的30个视频信息
 func (s *ListFeedsService) ListFeeds(req *video.FeedReq) ([]*model.Video, error) {
 	feeds, _ := db.ListFeeds(s.ctx, time.Unix(*req.LatestTime, 0))
 	if len(feeds) == 0 {
