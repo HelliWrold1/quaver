@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="RemoteTargetsManager">
+    <option name="projectDefaultTargetUuid" value="7f8b334a-b2cf-468c-90e1-57aa53fd948c" />
     <targets>
       <target name="ubuntu@192.168.24.136:22" type="ssh/sftp" uuid="7f8b334a-b2cf-468c-90e1-57aa53fd948c">
         <config>
