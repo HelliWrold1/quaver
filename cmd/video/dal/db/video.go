@@ -3,9 +3,6 @@ package db
 import (
 	"context"
 	"github.com/HelliWrold1/quaver/dal/model"
-	"github.com/HelliWrold1/quaver/pkg/mw/ftp"
-	"io"
-	"log"
 	"time"
 )
 
@@ -37,22 +34,4 @@ func ListFeeds(ctx context.Context, t time.Time) ([]*model.Video, error) {
 func ListLikes(ctx context.Context, id int64) ([]*model.Video, error) {
 	q := Q.Video.WithContext(ctx)
 	return q.Where(Q.Video.ID.Eq(id)).Find()
-}
-
-// ImageFTP
-// 将图片传入FTP服务器中，但是这里要注意图片的格式随着名字一起给,同时调用时需要自己结束流
-func ImageFTP(file io.Reader, imageName string) error {
-	//转到video相对路线下
-	err := ftp.MyFTP.Cwd("images")
-	if err != nil {
-		log.Println("转到路径images失败！！！")
-		return err
-	}
-	log.Println("转到路径images成功！！！")
-	if err = ftp.MyFTP.Stor(imageName, file); err != nil {
-		log.Println("上传图片失败！！！！！")
-		return err
-	}
-	log.Println("上传图片成功！！！！！")
-	return nil
 }
