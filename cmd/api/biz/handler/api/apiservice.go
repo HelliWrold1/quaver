@@ -4,6 +4,7 @@ package api
 
 import (
 	"context"
+	"fmt"
 	api "github.com/HelliWrold1/quaver/cmd/api/biz/model/api"
 	"github.com/HelliWrold1/quaver/cmd/api/biz/mw"
 	"github.com/HelliWrold1/quaver/cmd/api/biz/rpc"
@@ -147,7 +148,11 @@ func VideoFeed(ctx context.Context, c *app.RequestContext) {
 func VideoPublish(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(api.VideoPublishResponse)
+	file, _ := c.FormFile("file")
+	fmt.Println(file.Filename)
 
+	// Upload the file to specific dst
+	c.SaveUploadedFile(file, fmt.Sprintf("./file/upload/%s", file.Filename))
 	c.JSON(consts.StatusOK, resp)
 }
 
