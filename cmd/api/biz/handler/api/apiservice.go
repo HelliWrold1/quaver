@@ -6,13 +6,12 @@ import (
 	"context"
 	"fmt"
 	api "github.com/HelliWrold1/quaver/cmd/api/biz/model/api"
-	"github.com/HelliWrold1/quaver/cmd/api/biz/mw"
 	"github.com/HelliWrold1/quaver/cmd/api/biz/rpc"
 	"github.com/HelliWrold1/quaver/kitex_gen/user"
-	"github.com/HelliWrold1/quaver/pkg/errno"
 	"github.com/cloudwego/hertz/pkg/app"
-	"github.com/cloudwego/hertz/pkg/common/utils"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	"time"
 )
 
 // UserRegister .
@@ -22,47 +21,52 @@ func UserRegister(ctx context.Context, c *app.RequestContext) {
 	var req api.UserRegisterRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		SendResponse(c, errno.ConvertErr(err), nil)
+		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-	_, err = rpc.UserRegister(context.Background(), &user.RegisterReq{
+	userRegisterResp := new(api.UserRegisterResponse)
+	resp, err := rpc.UserRegister(context.Background(), &user.RegisterReq{
 		Username: req.Username,
 		Password: req.Password,
 	})
 	if err != nil {
-		SendResponse(c, errno.ConvertErr(err), nil)
+		userRegisterResp.Baseresp.StatusCode = int64(resp.StatusResp.GetStatusCode())
+		userRegisterResp.Baseresp.StatusMessage = resp.StatusResp.GetStatusMsg()
 	}
 
-	// 签发token
-	mw.JwtMiddleware.LoginHandler(ctx, c)
+	c.JSON(consts.StatusOK, resp)
 }
 
 // UserLogin .
-// @router /douyin/user/login [POST]
+// @router /douyin/user/register [POST]
 func UserLogin(ctx context.Context, c *app.RequestContext) {
-	mw.JwtMiddleware.LoginHandler(ctx, c)
+	var err error
+	var req api.UserLoginRequest
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(api.UserLoginResponse)
+
+	c.JSON(consts.StatusOK, resp)
 }
 
 // UserInfo .
 // @router douyin/user/ [GET]
-func UserInfo(_ context.Context, c *app.RequestContext) {
+func UserInfo(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req api.UserInfoRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		SendResponse(c, errno.ConvertErr(err), nil)
+		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-	resp, err := rpc.UserQuery(context.Background(), &user.InfoReq{
-		UserId: req.UserID,
-	})
-	if err != nil {
-		SendResponse(c, errno.ConvertErr(err), nil)
-	}
-	SendResponse(c, errno.Success, utils.H{
-		"status_code": 0,
-		"user":        resp,
-	})
+
+	resp := new(api.UserInfoResponse)
+
+	c.JSON(consts.StatusOK, resp)
 }
 
 // LikeAction .
@@ -75,8 +79,10 @@ func LikeAction(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-	//v, _ := c.Get("id")
 
+	resp := new(api.FavouriteActionResponse)
+
+	c.JSON(consts.StatusOK, resp)
 }
 
 // FavouriteList .
@@ -148,11 +154,17 @@ func VideoFeed(ctx context.Context, c *app.RequestContext) {
 func VideoPublish(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(api.VideoPublishResponse)
-	file, _ := c.FormFile("file")
-	fmt.Println(file.Filename)
-
+	file, _ := c.FormFile("data")
+	hlog.Info(file.Filename)
+	// 存储视频
+	fileName := "req.title" + file.Filename + "_" + time.Now().Format("20060504030201") // TODO 拼接一个视频标题或者token的一部分切片
+	hlog.Info(fileName)
 	// Upload the file to specific dst
-	c.SaveUploadedFile(file, fmt.Sprintf("./file/upload/%s", file.Filename))
+	err := c.SaveUploadedFile(file, fmt.Sprintf("./static/videos/%s", fileName))
+	if err != nil {
+		hlog.Error(err.Error())
+	}
+	c.String(consts.StatusOK, fmt.Sprintf("%s files uploaded!", fileName))
 	c.JSON(consts.StatusOK, resp)
 }
 
