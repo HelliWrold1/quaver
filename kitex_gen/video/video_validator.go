@@ -34,6 +34,9 @@ func (p *PubReq) IsValid() error {
 	if p.Datetime <= int64(0) {
 		return fmt.Errorf("field Datetime gt rule failed, current value: %v", p.Datetime)
 	}
+	if len(p.PlayUrl) < int(0) {
+		return fmt.Errorf("field PlayUrl min_len rule failed, current value: %d", len(p.PlayUrl))
+	}
 	return nil
 }
 func (p *PubResp) IsValid() error {

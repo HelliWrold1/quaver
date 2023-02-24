@@ -221,6 +221,7 @@ func (p *PubReq) FastRead(buf []byte) (int, error) {
 	var issetTitle bool = false
 	var issetAuthorId bool = false
 	var issetDatetime bool = false
+	var issetPlayUrl bool = false
 	_, l, err = bthrift.Binary.ReadStructBegin(buf)
 	offset += l
 	if err != nil {
@@ -282,6 +283,21 @@ func (p *PubReq) FastRead(buf []byte) (int, error) {
 					goto SkipFieldError
 				}
 			}
+		case 4:
+			if fieldTypeId == thrift.STRING {
+				l, err = p.FastReadField4(buf[offset:])
+				offset += l
+				if err != nil {
+					goto ReadFieldError
+				}
+				issetPlayUrl = true
+			} else {
+				l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
+				offset += l
+				if err != nil {
+					goto SkipFieldError
+				}
+			}
 		default:
 			l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
 			offset += l
@@ -314,6 +330,11 @@ func (p *PubReq) FastRead(buf []byte) (int, error) {
 
 	if !issetDatetime {
 		fieldId = 3
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetPlayUrl {
+		fieldId = 4
 		goto RequiredFieldNotSetError
 	}
 	return offset, nil
@@ -375,6 +396,20 @@ func (p *PubReq) FastReadField3(buf []byte) (int, error) {
 	return offset, nil
 }
 
+func (p *PubReq) FastReadField4(buf []byte) (int, error) {
+	offset := 0
+
+	if v, l, err := bthrift.Binary.ReadString(buf[offset:]); err != nil {
+		return offset, err
+	} else {
+		offset += l
+
+		p.PlayUrl = v
+
+	}
+	return offset, nil
+}
+
 // for compatibility
 func (p *PubReq) FastWrite(buf []byte) int {
 	return 0
@@ -387,6 +422,7 @@ func (p *PubReq) FastWriteNocopy(buf []byte, binaryWriter bthrift.BinaryWriter) 
 		offset += p.fastWriteField2(buf[offset:], binaryWriter)
 		offset += p.fastWriteField3(buf[offset:], binaryWriter)
 		offset += p.fastWriteField1(buf[offset:], binaryWriter)
+		offset += p.fastWriteField4(buf[offset:], binaryWriter)
 	}
 	offset += bthrift.Binary.WriteFieldStop(buf[offset:])
 	offset += bthrift.Binary.WriteStructEnd(buf[offset:])
@@ -400,6 +436,7 @@ func (p *PubReq) BLength() int {
 		l += p.field1Length()
 		l += p.field2Length()
 		l += p.field3Length()
+		l += p.field4Length()
 	}
 	l += bthrift.Binary.FieldStopLength()
 	l += bthrift.Binary.StructEndLength()
@@ -433,6 +470,15 @@ func (p *PubReq) fastWriteField3(buf []byte, binaryWriter bthrift.BinaryWriter) 
 	return offset
 }
 
+func (p *PubReq) fastWriteField4(buf []byte, binaryWriter bthrift.BinaryWriter) int {
+	offset := 0
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "play_url", thrift.STRING, 4)
+	offset += bthrift.Binary.WriteStringNocopy(buf[offset:], binaryWriter, p.PlayUrl)
+
+	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
+	return offset
+}
+
 func (p *PubReq) field1Length() int {
 	l := 0
 	l += bthrift.Binary.FieldBeginLength("title", thrift.STRING, 1)
@@ -455,6 +501,15 @@ func (p *PubReq) field3Length() int {
 	l := 0
 	l += bthrift.Binary.FieldBeginLength("datetime", thrift.I64, 3)
 	l += bthrift.Binary.I64Length(p.Datetime)
+
+	l += bthrift.Binary.FieldEndLength()
+	return l
+}
+
+func (p *PubReq) field4Length() int {
+	l := 0
+	l += bthrift.Binary.FieldBeginLength("play_url", thrift.STRING, 4)
+	l += bthrift.Binary.StringLengthNocopy(p.PlayUrl)
 
 	l += bthrift.Binary.FieldEndLength()
 	return l

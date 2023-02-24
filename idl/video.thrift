@@ -9,6 +9,7 @@ struct PubReq{
     1: required string title(vt.min_size = "1")
     2: required i64 author_id(vt.gt = "0")
     3: required i64 datetime(vt.gt = "0")
+    4: required string play_url(vt.min_size = "0")
 }
 
 struct PubResp{

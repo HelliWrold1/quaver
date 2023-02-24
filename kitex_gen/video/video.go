@@ -260,6 +260,7 @@ type PubReq struct {
 	Title    string `thrift:"title,1,required" frugal:"1,required,string" json:"title"`
 	AuthorId int64  `thrift:"author_id,2,required" frugal:"2,required,i64" json:"author_id"`
 	Datetime int64  `thrift:"datetime,3,required" frugal:"3,required,i64" json:"datetime"`
+	PlayUrl  string `thrift:"play_url,4,required" frugal:"4,required,string" json:"play_url"`
 }
 
 func NewPubReq() *PubReq {
@@ -281,6 +282,10 @@ func (p *PubReq) GetAuthorId() (v int64) {
 func (p *PubReq) GetDatetime() (v int64) {
 	return p.Datetime
 }
+
+func (p *PubReq) GetPlayUrl() (v string) {
+	return p.PlayUrl
+}
 func (p *PubReq) SetTitle(val string) {
 	p.Title = val
 }
@@ -290,11 +295,15 @@ func (p *PubReq) SetAuthorId(val int64) {
 func (p *PubReq) SetDatetime(val int64) {
 	p.Datetime = val
 }
+func (p *PubReq) SetPlayUrl(val string) {
+	p.PlayUrl = val
+}
 
 var fieldIDToName_PubReq = map[int16]string{
 	1: "title",
 	2: "author_id",
 	3: "datetime",
+	4: "play_url",
 }
 
 func (p *PubReq) Read(iprot thrift.TProtocol) (err error) {
@@ -304,6 +313,7 @@ func (p *PubReq) Read(iprot thrift.TProtocol) (err error) {
 	var issetTitle bool = false
 	var issetAuthorId bool = false
 	var issetDatetime bool = false
+	var issetPlayUrl bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -352,6 +362,17 @@ func (p *PubReq) Read(iprot thrift.TProtocol) (err error) {
 					goto SkipFieldError
 				}
 			}
+		case 4:
+			if fieldTypeId == thrift.STRING {
+				if err = p.ReadField4(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetPlayUrl = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
 		default:
 			if err = iprot.Skip(fieldTypeId); err != nil {
 				goto SkipFieldError
@@ -378,6 +399,11 @@ func (p *PubReq) Read(iprot thrift.TProtocol) (err error) {
 
 	if !issetDatetime {
 		fieldId = 3
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetPlayUrl {
+		fieldId = 4
 		goto RequiredFieldNotSetError
 	}
 	return nil
@@ -425,6 +451,15 @@ func (p *PubReq) ReadField3(iprot thrift.TProtocol) error {
 	return nil
 }
 
+func (p *PubReq) ReadField4(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadString(); err != nil {
+		return err
+	} else {
+		p.PlayUrl = v
+	}
+	return nil
+}
+
 func (p *PubReq) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("PubReq"); err != nil {
@@ -441,6 +476,10 @@ func (p *PubReq) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField3(oprot); err != nil {
 			fieldId = 3
+			goto WriteFieldError
+		}
+		if err = p.writeField4(oprot); err != nil {
+			fieldId = 4
 			goto WriteFieldError
 		}
 
@@ -513,6 +552,23 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 3 end error: ", p), err)
 }
 
+func (p *PubReq) writeField4(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("play_url", thrift.STRING, 4); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteString(p.PlayUrl); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 4 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 4 end error: ", p), err)
+}
+
 func (p *PubReq) String() string {
 	if p == nil {
 		return "<nil>"
@@ -535,6 +591,9 @@ func (p *PubReq) DeepEqual(ano *PubReq) bool {
 	if !p.Field3DeepEqual(ano.Datetime) {
 		return false
 	}
+	if !p.Field4DeepEqual(ano.PlayUrl) {
+		return false
+	}
 	return true
 }
 
@@ -555,6 +614,13 @@ func (p *PubReq) Field2DeepEqual(src int64) bool {
 func (p *PubReq) Field3DeepEqual(src int64) bool {
 
 	if p.Datetime != src {
+		return false
+	}
+	return true
+}
+func (p *PubReq) Field4DeepEqual(src string) bool {
+
+	if strings.Compare(p.PlayUrl, src) != 0 {
 		return false
 	}
 	return true
