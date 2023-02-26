@@ -13,17 +13,15 @@ import (
  */
 
 type Response struct {
-	Code    int64       `json:"code"`
-	Message string      `json:"message"`
-	Data    interface{} `json:"data"`
+	Code    int64  `json:"status_code"`
+	Message string `json:"status_message"`
 }
 
 // SendResponse pack response
-func SendResponse(c *app.RequestContext, err error, data interface{}) {
+func SendResponse(c *app.RequestContext, err error) {
 	Err := errno.ConvertErr(err)
 	c.JSON(consts.StatusOK, Response{
 		Code:    Err.ErrCode,
 		Message: Err.ErrMsg,
-		Data:    data,
 	})
 }

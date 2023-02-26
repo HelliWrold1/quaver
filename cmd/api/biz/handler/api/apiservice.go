@@ -6,11 +6,18 @@ import (
 	"context"
 	"fmt"
 	api "github.com/HelliWrold1/quaver/cmd/api/biz/model/api"
+	"github.com/HelliWrold1/quaver/cmd/api/biz/mw"
 	"github.com/HelliWrold1/quaver/cmd/api/biz/rpc"
+	"github.com/HelliWrold1/quaver/kitex_gen/comment"
+	"github.com/HelliWrold1/quaver/kitex_gen/like"
 	"github.com/HelliWrold1/quaver/kitex_gen/user"
+	"github.com/HelliWrold1/quaver/kitex_gen/video"
+	"github.com/HelliWrold1/quaver/pkg/errno"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
+	"github.com/cloudwego/hertz/pkg/common/utils"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	"strconv"
 	"time"
 )
 
@@ -21,36 +28,25 @@ func UserRegister(ctx context.Context, c *app.RequestContext) {
 	var req api.UserRegisterRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		SendResponse(c, errno.ConvertErr(err))
 		return
 	}
-	userRegisterResp := new(api.UserRegisterResponse)
-	resp, err := rpc.UserRegister(context.Background(), &user.RegisterReq{
+	_, err = rpc.UserRegister(context.Background(), &user.RegisterReq{
 		Username: req.Username,
 		Password: req.Password,
 	})
 	if err != nil {
-		userRegisterResp.Baseresp.StatusCode = int64(resp.StatusResp.GetStatusCode())
-		userRegisterResp.Baseresp.StatusMessage = resp.StatusResp.GetStatusMsg()
+		SendResponse(c, errno.ConvertErr(err))
 	}
 
-	c.JSON(consts.StatusOK, resp)
+	// 签发token
+	mw.JwtMiddleware.LoginHandler(ctx, c)
 }
 
 // UserLogin .
 // @router /douyin/user/register [POST]
 func UserLogin(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req api.UserLoginRequest
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(api.UserLoginResponse)
-
-	c.JSON(consts.StatusOK, resp)
+	mw.JwtMiddleware.LoginHandler(ctx, c)
 }
 
 // UserInfo .
@@ -60,13 +56,20 @@ func UserInfo(ctx context.Context, c *app.RequestContext) {
 	var req api.UserInfoRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		SendResponse(c, errno.ConvertErr(err))
 		return
 	}
-
-	resp := new(api.UserInfoResponse)
-
-	c.JSON(consts.StatusOK, resp)
+	resp, err := rpc.UserQuery(context.Background(), &user.InfoReq{
+		UserId: req.UserID,
+	})
+	if err != nil {
+		SendResponse(c, errno.ConvertErr(err))
+	}
+	c.JSON(consts.StatusOK, utils.H{
+		"status_code":    0,
+		"status_message": errno.Success,
+		"user":           resp,
+	})
 }
 
 // LikeAction .
@@ -74,15 +77,45 @@ func UserInfo(ctx context.Context, c *app.RequestContext) {
 func LikeAction(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req api.FavouriteActionRequest
-	err = c.BindAndValidate(&req)
+	req.VideoID, err = strconv.ParseInt(c.Query("video_id"), 10, 64)
+	req.ActionType, err = strconv.ParseInt(c.Query("action_type"), 10, 64)
+	v, _ := c.Get("identityKey")
+	req.UserID = v.(*api.User).Id
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		SendResponse(c, errno.ConvertErr(err))
 		return
 	}
+	if req.ActionType == 1 {
+		_, err = rpc.LikeVideo(context.Background(), &like.LikeReq{
+			UserId:  req.UserID,
+			VideoId: req.VideoID,
+		})
+		if err != nil {
+			SendResponse(c, errno.ConvertErr(err))
+		}
+		c.JSON(consts.StatusOK, utils.H{
+			"status_code":    errno.Success.ErrCode,
+			"status_message": errno.Success.ErrMsg,
+		})
+	} else if req.ActionType == 2 {
+		_, err = rpc.DeleteLike(context.Background(), &like.DeleteReq{
+			UserId:  req.UserID,
+			VideoId: req.VideoID,
+		})
+		if err != nil {
+			SendResponse(c, errno.ConvertErr(err))
+		}
+		c.JSON(consts.StatusOK, utils.H{
+			"status_code":    errno.Success.ErrCode,
+			"status_message": errno.Success.ErrMsg,
+		})
+	} else {
+		c.JSON(consts.StatusBadRequest, utils.H{
+			"status_code":    -1,
+			"status_message": "ActionTypeError!",
+		})
+	}
 
-	resp := new(api.FavouriteActionResponse)
-
-	c.JSON(consts.StatusOK, resp)
 }
 
 // FavouriteList .
@@ -90,15 +123,18 @@ func LikeAction(ctx context.Context, c *app.RequestContext) {
 func FavouriteList(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req api.FavouriteListRequest
-	err = c.BindAndValidate(&req)
+	req.UserID, err = strconv.ParseInt(c.Query("user_id"), 10, 64)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
+		SendResponse(c, errno.ConvertErr(err))
 	}
+	resp, err := rpc.ListLikes(context.Background(), &video.ListLikeReq{
+		UserId: req.UserID})
 
-	resp := new(api.FavouriteListResponse)
-
-	c.JSON(consts.StatusOK, resp)
+	c.JSON(consts.StatusOK, utils.H{
+		"status_code":    0,
+		"status_message": errno.Success.ErrMsg,
+		"video_list":     resp.VideoList,
+	})
 }
 
 // CommentAction .
@@ -108,13 +144,78 @@ func CommentAction(ctx context.Context, c *app.RequestContext) {
 	var req api.CommentActionRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
+		SendResponse(c, errno.ConvertErr(err))
+	}
+	respDelete := new(api.CommentListResp)
+	v, _ := c.Get("identityKey")
+	if req.ActionType == 1 {
+		resp, err := rpc.PublishComment(context.Background(), &comment.PubReq{
+			Msg:      req.CommentText,
+			AuthorId: v.(*api.User).Id,
+			VideoId:  req.VideoID,
+		})
+		if err != nil {
+			SendResponse(c, errno.ConvertErr(err))
+		}
+		respDelete.BaseResp.StatusCode = int64(resp.StatusResp.StatusCode)
+		respDelete.BaseResp.StatusMessage = *resp.StatusResp.StatusMsg
+		respDelete.CommentList = make([]*api.CommentPub, len(resp.GetCommentList()))
+		for key, comment := range resp.CommentList {
+			respDelete.CommentList[key] = &api.CommentPub{
+				Id: comment.CommentId,
+				User: api.User{
+					Id:   comment.UserId,
+					Name: comment.UserName,
+				},
+				Content:    comment.Msg,
+				CreateDate: comment.Date,
+			}
+		}
+
+		if err != nil {
+			SendResponse(c, errno.ConvertErr(err))
+		}
+
+	} else if req.ActionType == 2 {
+		commetId, err := strconv.ParseInt(*req.CommentID, 10, 64)
+		_, err = rpc.DeleteComment(context.Background(), &comment.DeleteReq{
+			VideoId:   req.VideoID,
+			CommentId: commetId,
+		})
+
+		if err != nil {
+			SendResponse(c, errno.ConvertErr(err))
+		}
+		commentListResp, err := rpc.ListComments(context.Background(), &comment.ListReq{
+			VideoId: req.VideoID,
+		})
+
+		respDelete.BaseResp.StatusCode = int64(commentListResp.StatusResp.StatusCode)
+		respDelete.BaseResp.StatusMessage = *commentListResp.StatusResp.StatusMsg
+		respDelete.CommentList = make([]*api.CommentPub, len(commentListResp.GetCommentList()))
+		for key, comment := range commentListResp.CommentList {
+			respDelete.CommentList[key] = &api.CommentPub{
+				Id: comment.CommentId,
+				User: api.User{
+					Id:   comment.UserId,
+					Name: comment.UserName,
+				},
+				Content:    comment.Msg,
+				CreateDate: comment.Date,
+			}
+		}
+
+		if err != nil {
+			SendResponse(c, errno.ConvertErr(err))
+		}
+	} else {
+		c.JSON(consts.StatusBadRequest, utils.H{
+			"status_code":    -1,
+			"status_message": "ActionTypeError!",
+		})
 	}
 
-	resp := new(api.CommentActionResponse)
-
-	c.JSON(consts.StatusOK, resp)
+	c.JSON(consts.StatusOK, respDelete)
 }
 
 // CommentList .
@@ -124,12 +225,31 @@ func CommentList(ctx context.Context, c *app.RequestContext) {
 	var req api.CommentListRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
+		SendResponse(c, errno.ConvertErr(err))
+	}
+	var respCommentList *comment.ListResp
+	respCommentList, err = rpc.ListComments(context.Background(), &comment.ListReq{
+		VideoId: req.VideoID,
+	})
+	if err != nil {
+		SendResponse(c, errno.ConvertErr(err))
 	}
 
-	resp := new(api.CommentListResponse)
-
+	resp := new(api.CommentListResp)
+	resp.BaseResp.StatusCode = int64(respCommentList.StatusResp.StatusCode)
+	resp.BaseResp.StatusMessage = *respCommentList.StatusResp.StatusMsg
+	resp.CommentList = make([]*api.CommentPub, len(respCommentList.GetCommentList()))
+	for key, comment := range respCommentList.CommentList {
+		resp.CommentList[key] = &api.CommentPub{
+			Id: comment.CommentId,
+			User: api.User{
+				Id:   comment.UserId,
+				Name: comment.UserName,
+			},
+			Content:    comment.Msg,
+			CreateDate: comment.Date,
+		}
+	}
 	c.JSON(consts.StatusOK, resp)
 }
 

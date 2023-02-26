@@ -100,7 +100,7 @@ func InitJWT() {
 		Unauthorized: func(ctx context.Context, c *app.RequestContext, code int, message string) {
 			c.JSON(http.StatusOK, utils.H{
 				"status_code": errno.AuthorizationFailedErr.ErrCode,
-				"message":     message,
+				"status_msg":  message,
 			})
 		},
 		// 一旦jwt校验流程产生错误，对应err将以参数的形式传递给HTTPStatusMessageFunc，由其提取出需要响应的错误信息
