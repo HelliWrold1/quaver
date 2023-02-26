@@ -17,12 +17,11 @@ server:
   exportEndpoint: :4317
 
 mysql:
-  host: 127.0.0.1
+  host: localhost
   port: 3306
   database: quaver
   username: root
-#  password: Chenfeng20020106 #下次改直接注释
-  password: root
+  password: Chenfeng20020106 #下次改直接注释
   charset: utf8mb4
   maxIdleConns : 28  # 空闲连接池最连接数
   maxOpenConns : 100 # 最大打开连接数

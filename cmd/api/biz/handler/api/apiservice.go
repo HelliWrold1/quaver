@@ -272,19 +272,25 @@ func VideoFeed(ctx context.Context, c *app.RequestContext) {
 // VideoPublish .
 // @router /douyin/publish/action/ [POST]
 func VideoPublish(ctx context.Context, c *app.RequestContext) {
-
-	resp := new(api.VideoPublishResponse)
+	title := c.Query("title")
 	file, _ := c.FormFile("data")
+	v, _ := c.Get("identityKey")
+	resp, err := rpc.PublishVideo(context.Background(), &video.PubReq{
+		Title:    title,
+		AuthorId: v.(*api.User).Id,
+		Datetime: time.Now().Unix(),
+	})
 	hlog.Info(file.Filename)
 	// 存储视频
 	fileName := "req.title" + file.Filename + "_" + time.Now().Format("20060504030201") // TODO 拼接一个视频标题或者token的一部分切片
 	hlog.Info(fileName)
 	// Upload the file to specific dst
-	err := c.SaveUploadedFile(file, fmt.Sprintf("./static/videos/%s", fileName))
+	err = c.SaveUploadedFile(file, fmt.Sprintf("./static/videos/%s", fileName))
 	if err != nil {
 		hlog.Error(err.Error())
 	}
 	c.String(consts.StatusOK, fmt.Sprintf("%s files uploaded!", fileName))
+	//resp = new(api.VideoPublishResponse)
 	c.JSON(consts.StatusOK, resp)
 }
 
