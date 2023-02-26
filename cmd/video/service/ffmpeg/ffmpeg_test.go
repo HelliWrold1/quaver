@@ -22,10 +22,10 @@ func Test_Thumbnail(t *testing.T) {
 		{
 			name: "1",
 			args: args{
-				//src:       "../../../../static/videos/1.mp4",
-				//dst:       "../../../../static/images/1.jpg",
-				src:       "../static/videos/1.mp4",
-				dst:       "../static/images/1.jpg",
+				src: "../../../../static/videos/1.mp4",
+				dst: "../../../../static/images/1.jpg",
+				//src:       "../static/videos/1.mp4",
+				//dst:       "../static/images/1.jpg",
 				duration:  1 * time.Second,
 				overwrite: true,
 			},
@@ -36,7 +36,7 @@ func Test_Thumbnail(t *testing.T) {
 	t.Log(pwd)
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := Get().Thumbnail(tt.args.src, tt.args.dst, tt.args.duration, tt.args.overwrite); (err != nil) != tt.wantErr {
+			if err := new(Bind).Thumbnail(tt.args.src, tt.args.dst, tt.args.duration, tt.args.overwrite); (err != nil) != tt.wantErr {
 				t.Errorf("Thumbnail() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
