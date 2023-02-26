@@ -70,7 +70,7 @@ func (config *QuaverConfig) LocalConfigInit() {
 	viper.AutomaticEnv()
 	// 再改的时候直接注释！！！！
 	//goPath := viper.GetString("GOPATH")                                 // 获取环境变量
-	configPath := "/Users/fengdacrcy/Desktop/quater_chen/quaver/config" // configPath是配置文件的绝对路径
+	configPath := "/Users/fengdacrcy/Desktop/tik_tok_3/quaver/config" // configPath是配置文件的绝对路径
 	//goPath := viper.GetString("GOPATH")                                // 获取环境变量
 	//configPath := goPath + "/src/github.com/HelliWrold1/quaver/config" // configPath是配置文件的绝对路径
 	viper.SetConfigName("config")

@@ -24,7 +24,7 @@ func main() {
 	Init()
 	//tracer, cfg := tracing.NewServerTracer()
 	h := server.New(
-		server.WithHostPorts(":8081"),
+		server.WithHostPorts("0.0.0.0:8081"),
 		server.WithMaxRequestBodySize(20<<20),
 		server.WithKeepAlive(true),
 		server.WithHandleMethodNotAllowed(true), // coordinate with NoMethod
