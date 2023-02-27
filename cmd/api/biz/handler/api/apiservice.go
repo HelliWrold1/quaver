@@ -269,8 +269,6 @@ func VideoFeed(ctx context.Context, c *app.RequestContext) {
 		SendResponse(c, errno.ConvertErr(err))
 	}
 
-	//resp := new(api.VideoFeedResponse)
-
 	c.JSON(consts.StatusOK, resp)
 }
 

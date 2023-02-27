@@ -110,7 +110,7 @@ struct CommentListResponse{
 }
 
 struct VideoFeedRequest{
-    1: optional i64 latest_time(api.query="latest_time", api.vd="len($) > 0")
+    1: i64 latest_time(api.query="latest_time")
 }
 
 struct VideoFeedResponse{
@@ -133,9 +133,9 @@ struct VideoPublishListResponse{
 }
 
 service Apiservice{
-    UserRegisterResponse  UserRegister(1:UserRegisterRequest req) (api.post="/douyin/user/register")
-    UserLoginResponse UserLogin(1:UserLoginRequest req) (api.post="/douyin/user/login")
-    UserInfoResponse UserInfo(1:UserInfoRequest req) (api.get="douyin/user/")
+    UserRegisterResponse  UserRegister(1:UserRegisterRequest req) (api.post="/douyin/user/register/")
+    UserLoginResponse UserLogin(1:UserLoginRequest req) (api.post="/douyin/user/login/")
+    UserInfoResponse UserInfo(1:UserInfoRequest req) (api.get="/douyin/user/")
     FavouriteActionResponse LikeAction(1:FavouriteActionRequest req) (api.post="/douyin/favorite/action/")
     FavouriteListResponse FavouriteList(1:FavouriteListRequest req) (api.get="/douyin/favorite/list/")
     CommentActionResponse CommentAction(1:CommentActionRequest req) (api.post="/douyin/comment/action/")

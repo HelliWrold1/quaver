@@ -1945,7 +1945,8 @@ func (p *FeedReq) FastReadField1(buf []byte) (int, error) {
 		return offset, err
 	} else {
 		offset += l
-		p.LatestTime = &v
+
+		p.LatestTime = v
 
 	}
 	return offset, nil
@@ -1980,23 +1981,19 @@ func (p *FeedReq) BLength() int {
 
 func (p *FeedReq) fastWriteField1(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	if p.IsSetLatestTime() {
-		offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "latest_time", thrift.I64, 1)
-		offset += bthrift.Binary.WriteI64(buf[offset:], *p.LatestTime)
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "latest_time", thrift.I64, 1)
+	offset += bthrift.Binary.WriteI64(buf[offset:], p.LatestTime)
 
-		offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
-	}
+	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
 	return offset
 }
 
 func (p *FeedReq) field1Length() int {
 	l := 0
-	if p.IsSetLatestTime() {
-		l += bthrift.Binary.FieldBeginLength("latest_time", thrift.I64, 1)
-		l += bthrift.Binary.I64Length(*p.LatestTime)
+	l += bthrift.Binary.FieldBeginLength("latest_time", thrift.I64, 1)
+	l += bthrift.Binary.I64Length(p.LatestTime)
 
-		l += bthrift.Binary.FieldEndLength()
-	}
+	l += bthrift.Binary.FieldEndLength()
 	return l
 }
 

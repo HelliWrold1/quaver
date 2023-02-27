@@ -2355,7 +2355,7 @@ func (p *ListResp) Field2DeepEqual(src []*Video) bool {
 }
 
 type FeedReq struct {
-	LatestTime *int64 `thrift:"latest_time,1,optional" frugal:"1,optional,i64" json:"latest_time,omitempty"`
+	LatestTime int64 `thrift:"latest_time,1" frugal:"1,default,i64" json:"latest_time"`
 }
 
 func NewFeedReq() *FeedReq {
@@ -2366,24 +2366,15 @@ func (p *FeedReq) InitDefault() {
 	*p = FeedReq{}
 }
 
-var FeedReq_LatestTime_DEFAULT int64
-
 func (p *FeedReq) GetLatestTime() (v int64) {
-	if !p.IsSetLatestTime() {
-		return FeedReq_LatestTime_DEFAULT
-	}
-	return *p.LatestTime
+	return p.LatestTime
 }
-func (p *FeedReq) SetLatestTime(val *int64) {
+func (p *FeedReq) SetLatestTime(val int64) {
 	p.LatestTime = val
 }
 
 var fieldIDToName_FeedReq = map[int16]string{
 	1: "latest_time",
-}
-
-func (p *FeedReq) IsSetLatestTime() bool {
-	return p.LatestTime != nil
 }
 
 func (p *FeedReq) Read(iprot thrift.TProtocol) (err error) {
@@ -2449,7 +2440,7 @@ func (p *FeedReq) ReadField1(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
-		p.LatestTime = &v
+		p.LatestTime = v
 	}
 	return nil
 }
@@ -2484,16 +2475,14 @@ WriteStructEndError:
 }
 
 func (p *FeedReq) writeField1(oprot thrift.TProtocol) (err error) {
-	if p.IsSetLatestTime() {
-		if err = oprot.WriteFieldBegin("latest_time", thrift.I64, 1); err != nil {
-			goto WriteFieldBeginError
-		}
-		if err := oprot.WriteI64(*p.LatestTime); err != nil {
-			return err
-		}
-		if err = oprot.WriteFieldEnd(); err != nil {
-			goto WriteFieldEndError
-		}
+	if err = oprot.WriteFieldBegin("latest_time", thrift.I64, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.LatestTime); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
 	}
 	return nil
 WriteFieldBeginError:
@@ -2521,14 +2510,9 @@ func (p *FeedReq) DeepEqual(ano *FeedReq) bool {
 	return true
 }
 
-func (p *FeedReq) Field1DeepEqual(src *int64) bool {
+func (p *FeedReq) Field1DeepEqual(src int64) bool {
 
-	if p.LatestTime == src {
-		return true
-	} else if p.LatestTime == nil || src == nil {
-		return false
-	}
-	if *p.LatestTime != *src {
+	if p.LatestTime != src {
 		return false
 	}
 	return true

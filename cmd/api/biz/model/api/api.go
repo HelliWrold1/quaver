@@ -4251,28 +4251,19 @@ func (p *CommentListResponse) String() string {
 }
 
 type VideoFeedRequest struct {
-	LatestTime *int64 `thrift:"latest_time,1,optional" json:"latest_time,omitempty" query:"latest_time" vd:"len($) > 0"`
+	LatestTime int64 `thrift:"latest_time,1" json:"latest_time" query:"latest_time"`
 }
 
 func NewVideoFeedRequest() *VideoFeedRequest {
 	return &VideoFeedRequest{}
 }
 
-var VideoFeedRequest_LatestTime_DEFAULT int64
-
 func (p *VideoFeedRequest) GetLatestTime() (v int64) {
-	if !p.IsSetLatestTime() {
-		return VideoFeedRequest_LatestTime_DEFAULT
-	}
-	return *p.LatestTime
+	return p.LatestTime
 }
 
 var fieldIDToName_VideoFeedRequest = map[int16]string{
 	1: "latest_time",
-}
-
-func (p *VideoFeedRequest) IsSetLatestTime() bool {
-	return p.LatestTime != nil
 }
 
 func (p *VideoFeedRequest) Read(iprot thrift.TProtocol) (err error) {
@@ -4338,7 +4329,7 @@ func (p *VideoFeedRequest) ReadField1(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
-		p.LatestTime = &v
+		p.LatestTime = v
 	}
 	return nil
 }
@@ -4373,16 +4364,14 @@ WriteStructEndError:
 }
 
 func (p *VideoFeedRequest) writeField1(oprot thrift.TProtocol) (err error) {
-	if p.IsSetLatestTime() {
-		if err = oprot.WriteFieldBegin("latest_time", thrift.I64, 1); err != nil {
-			goto WriteFieldBeginError
-		}
-		if err := oprot.WriteI64(*p.LatestTime); err != nil {
-			return err
-		}
-		if err = oprot.WriteFieldEnd(); err != nil {
-			goto WriteFieldEndError
-		}
+	if err = oprot.WriteFieldBegin("latest_time", thrift.I64, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.LatestTime); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
 	}
 	return nil
 WriteFieldBeginError:

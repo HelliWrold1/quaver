@@ -62,9 +62,9 @@ func (s *VideoServiceImpl) ListFeeds(ctx context.Context, req *video.FeedReq) (r
 	}
 
 	// 如果没有提供时间，则按最新的时间返回视频列表
-	if req.LatestTime == nil {
+	if req.LatestTime == 0 {
 		nowTimeStamp := time.Now().Unix()
-		req.LatestTime = &nowTimeStamp
+		req.LatestTime = nowTimeStamp
 	}
 
 	feeds, err := service.NewListFeedsService(ctx).ListFeeds(req)
