@@ -119,7 +119,7 @@ func LikeAction(ctx context.Context, c *app.RequestContext) {
 }
 
 // FavouriteList .
-// @router /douyin/favorite/list/ [POST]
+// @router /douyin/favorite/list/ [GET]
 func FavouriteList(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req api.FavouriteListRequest
@@ -219,7 +219,7 @@ func CommentAction(ctx context.Context, c *app.RequestContext) {
 }
 
 // CommentList .
-// @router /douyin/comment/list/ [POST]
+// @router /douyin/comment/list/ [GET]
 func CommentList(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req api.CommentListRequest
@@ -254,7 +254,7 @@ func CommentList(ctx context.Context, c *app.RequestContext) {
 }
 
 // VideoFeed .
-// @router /douyin/feed/ [POST]
+// @router /douyin/feed/ [GET]
 func VideoFeed(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req api.VideoFeedRequest
@@ -263,8 +263,7 @@ func VideoFeed(ctx context.Context, c *app.RequestContext) {
 		SendResponse(c, errno.ConvertErr(err))
 	}
 	resp, err := rpc.ListFeeds(context.Background(), &video.FeedReq{
-		StatusResp: nil,
-		LatestTime: &req.LatestTime,
+		LatestTime: req.LatestTime,
 	})
 	if err != nil {
 		SendResponse(c, errno.ConvertErr(err))
@@ -309,7 +308,7 @@ func VideoPublish(ctx context.Context, c *app.RequestContext) {
 }
 
 // VideoPublishList .
-// @router /douyin/publish/list/ [POST]
+// @router /douyin/publish/list/ [GET]
 func VideoPublishList(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req api.VideoPublishListRequest

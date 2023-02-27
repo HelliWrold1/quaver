@@ -73,11 +73,6 @@ func (p *ListResp) IsValid() error {
 	return nil
 }
 func (p *FeedReq) IsValid() error {
-	if p.StatusResp != nil {
-		if err := p.StatusResp.IsValid(); err != nil {
-			return fmt.Errorf("filed StatusResp not valid, %w", err)
-		}
-	}
 	if p.LatestTime != nil {
 		if *p.LatestTime <= int64(0) {
 			return fmt.Errorf("field LatestTime gt rule failed, current value: %v", *p.LatestTime)

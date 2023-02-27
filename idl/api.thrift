@@ -110,7 +110,7 @@ struct CommentListResponse{
 }
 
 struct VideoFeedRequest{
-    1:i64 latest_time(api.query="latest_time", api.vd="len($) > 0")
+    1: optional i64 latest_time(api.query="latest_time", api.vd="len($) > 0")
 }
 
 struct VideoFeedResponse{
@@ -137,10 +137,10 @@ service Apiservice{
     UserLoginResponse UserLogin(1:UserLoginRequest req) (api.post="/douyin/user/login")
     UserInfoResponse UserInfo(1:UserInfoRequest req) (api.get="douyin/user/")
     FavouriteActionResponse LikeAction(1:FavouriteActionRequest req) (api.post="/douyin/favorite/action/")
-    FavouriteListResponse FavouriteList(1:FavouriteListRequest req) (api.post="/douyin/favorite/list/")
+    FavouriteListResponse FavouriteList(1:FavouriteListRequest req) (api.get="/douyin/favorite/list/")
     CommentActionResponse CommentAction(1:CommentActionRequest req) (api.post="/douyin/comment/action/")
-    CommentListResponse CommentList(1:CommentListRequest req) (api.post="/douyin/comment/list/")
-    VideoFeedResponse VideoFeed(1:VideoFeedRequest req) (api.post="/douyin/feed/")
+    CommentListResponse CommentList(1:CommentListRequest req) (api.get="/douyin/comment/list/")
+    VideoFeedResponse VideoFeed(1:VideoFeedRequest req) (api.get="/douyin/feed/")
     VideoPublishResponse VideoPublish()(api.post="/douyin/publish/action/")
-    VideoPublishListRequest VideoPublishList(1:VideoPublishListRequest req)(api.post="/douyin/publish/list/")
+    VideoPublishListRequest VideoPublishList(1:VideoPublishListRequest req)(api.get="/douyin/publish/list/")
 }
