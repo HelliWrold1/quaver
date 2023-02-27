@@ -18,6 +18,7 @@ import (
 	"github.com/cloudwego/hertz/pkg/common/utils"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -67,8 +68,11 @@ func UserInfo(ctx context.Context, c *app.RequestContext) {
 	}
 	c.JSON(consts.StatusOK, utils.H{
 		"status_code":    0,
-		"status_message": errno.Success,
-		"user":           resp,
+		"status_message": errno.Success.ErrMsg,
+		"user": map[string]interface{}{
+			"id":   resp.UserId,
+			"name": resp.Username,
+		},
 	})
 }
 
@@ -275,12 +279,14 @@ func VideoFeed(ctx context.Context, c *app.RequestContext) {
 // VideoPublish .
 // @router /douyin/publish/action/ [POST]
 func VideoPublish(ctx context.Context, c *app.RequestContext) {
-	title := c.Query("title")
+	title := c.PostForm("title")
 	file, _ := c.FormFile("data")
 	v, _ := c.Get("identityKey")
+	//v, _ := c.GetPostForm("identityKey")
 	hlog.Info(file.Filename)
 	// 存储视频
-	fileName := "req.title" + file.Filename + "_" + time.Now().Format("20060504030201")
+	splitName := strings.Split(file.Filename, ".")
+	fileName := title + splitName[0] + "_" + time.Now().Format("20060504030201") + splitName[1]
 	hlog.Info(fileName)
 	// Upload the file to specific dst
 	err := c.SaveUploadedFile(file, fmt.Sprintf("~/go/src/github.com/HelliWrold1/quaver/static/videos/%s.mp4", fileName))
