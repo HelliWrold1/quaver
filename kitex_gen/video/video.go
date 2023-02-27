@@ -2355,7 +2355,7 @@ func (p *ListResp) Field2DeepEqual(src []*Video) bool {
 }
 
 type FeedReq struct {
-	LatestTime int64 `thrift:"latest_time,1" frugal:"1,default,i64" json:"latest_time"`
+	LatestTime int64 `thrift:"latest_time,1,required" frugal:"1,required,i64" json:"latest_time"`
 }
 
 func NewFeedReq() *FeedReq {
@@ -2381,6 +2381,7 @@ func (p *FeedReq) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
+	var issetLatestTime bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -2401,6 +2402,7 @@ func (p *FeedReq) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
+				issetLatestTime = true
 			} else {
 				if err = iprot.Skip(fieldTypeId); err != nil {
 					goto SkipFieldError
@@ -2420,6 +2422,10 @@ func (p *FeedReq) Read(iprot thrift.TProtocol) (err error) {
 		goto ReadStructEndError
 	}
 
+	if !issetLatestTime {
+		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
 	return nil
 ReadStructBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
@@ -2434,6 +2440,8 @@ ReadFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
 ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+RequiredFieldNotSetError:
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_FeedReq[fieldId]))
 }
 
 func (p *FeedReq) ReadField1(iprot thrift.TProtocol) error {

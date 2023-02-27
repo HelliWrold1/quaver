@@ -11,7 +11,6 @@ import (
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	"testing"
-	"time"
 )
 
 var videoClient videoservice.Client
@@ -55,9 +54,9 @@ func TestListFeedsRPC(t *testing.T) {
 	// ListFeeds 列出推流列表
 
 	t.Run("ListFeedsRPC", func(t *testing.T) {
-		feeds, err := ListFeeds(context.Background(), &video.FeedReq{LatestTime: time.Now().Unix()})
+		feeds, err := ListFeeds(context.Background(), &video.FeedReq{LatestTime: 0})
 		if err != nil {
-			t.Error("错误")
+			t.Error(err)
 		}
 		t.Error(feeds)
 	})

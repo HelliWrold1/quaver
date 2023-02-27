@@ -46,7 +46,7 @@ struct ListResp{
 }
 
 struct FeedReq{
-    1: i64 latest_time(vt.gt = "0") // 返回的视频的最新投稿时间戳
+    1: required i64 latest_time // 返回的视频的最新投稿时间戳
 }
 
 struct FeedResp {

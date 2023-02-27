@@ -23,12 +23,13 @@ func BuildStatusResp(err error) *like.StatusResp {
 }
 
 func BuildLikesResp(resp *like.ListResp, likes []*model.Like) {
-	respLikes := make([]*like.Video, 10)
+	length := len(likes)
+	respLikes := make([]*like.Video, length)
 	// like表只能提供的根据UID找的videoID
-	for i := 0; i < len(likes); i++ {
-		respLikes = append(respLikes, &like.Video{
+	for i := 0; i < length; i++ {
+		respLikes[i] = &like.Video{
 			VideoId: likes[i].VideoID,
-		})
+		}
 	}
 	resp.VideoList = respLikes
 }

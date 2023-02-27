@@ -68,6 +68,7 @@ func (s *LikeServiceImpl) ListLikes(ctx context.Context, req *like.ListReq) (res
 
 // CountLikes implements the LikeServiceImpl interface.
 func (s *LikeServiceImpl) CountLikes(ctx context.Context, req *like.CountReq) (resp *like.CountResp, err error) {
+	resp = new(like.CountResp)
 	// 验证数据合法性
 	err = req.IsValid()
 	if err != nil {
@@ -88,6 +89,7 @@ func (s *LikeServiceImpl) CountLikes(ctx context.Context, req *like.CountReq) (r
 
 // QueryLike implements the LikeServiceImpl interface.
 func (s *LikeServiceImpl) QueryLike(ctx context.Context, req *like.QueryReq) (resp *like.QueryResp, err error) {
+	resp = new(like.QueryResp)
 	err = req.IsValid()
 	if err != nil {
 		resp.Like = false
