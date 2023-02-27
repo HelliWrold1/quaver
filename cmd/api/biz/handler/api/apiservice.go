@@ -8,7 +8,6 @@ import (
 	api "github.com/HelliWrold1/quaver/cmd/api/biz/model/api"
 	"github.com/HelliWrold1/quaver/cmd/api/biz/mw"
 	"github.com/HelliWrold1/quaver/cmd/api/biz/rpc"
-	"github.com/HelliWrold1/quaver/cmd/video/service/ffmpeg"
 	"github.com/HelliWrold1/quaver/kitex_gen/comment"
 	"github.com/HelliWrold1/quaver/kitex_gen/like"
 	"github.com/HelliWrold1/quaver/kitex_gen/user"
@@ -19,6 +18,7 @@ import (
 	"github.com/cloudwego/hertz/pkg/common/utils"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -45,9 +45,8 @@ func UserRegister(ctx context.Context, c *app.RequestContext) {
 }
 
 // UserLogin .
-// @router /douyin/user/login [POST]
+// @router /douyin/user/register [POST]
 func UserLogin(ctx context.Context, c *app.RequestContext) {
-	hlog.CtxTracef(ctx, "向login发起请求")
 	mw.JwtMiddleware.LoginHandler(ctx, c)
 }
 
@@ -67,13 +66,13 @@ func UserInfo(ctx context.Context, c *app.RequestContext) {
 	if err != nil {
 		SendResponse(c, errno.ConvertErr(err))
 	}
-	respUser := new(api.UserInfo)
-	respUser.Name = resp.Username
-	respUser.Id = resp.UserId
 	c.JSON(consts.StatusOK, utils.H{
 		"status_code":    0,
 		"status_message": errno.Success.ErrMsg,
-		"user":           respUser,
+		"user": map[string]interface{}{
+			"id":   resp.UserId,
+			"name": resp.Username,
+		},
 	})
 }
 
@@ -124,7 +123,7 @@ func LikeAction(ctx context.Context, c *app.RequestContext) {
 }
 
 // FavouriteList .
-// @router /douyin/favorite/list/ [POST]
+// @router /douyin/favorite/list/ [GET]
 func FavouriteList(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req api.FavouriteListRequest
@@ -224,7 +223,7 @@ func CommentAction(ctx context.Context, c *app.RequestContext) {
 }
 
 // CommentList .
-// @router /douyin/comment/list/ [POST]
+// @router /douyin/comment/list/ [GET]
 func CommentList(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req api.CommentListRequest
@@ -268,47 +267,49 @@ func VideoFeed(ctx context.Context, c *app.RequestContext) {
 		SendResponse(c, errno.ConvertErr(err))
 	}
 	resp, err := rpc.ListFeeds(context.Background(), &video.FeedReq{
-		StatusResp: nil,
-		LatestTime: &req.LatestTime,
+		LatestTime: req.LatestTime,
 	})
 	if err != nil {
 		SendResponse(c, errno.ConvertErr(err))
 	}
 
-	//resp := new(api.VideoFeedResponse)
-
-	c.JSON(consts.StatusOK, resp)
+	c.JSON(consts.StatusOK, &video.FeedResp{
+		StatusCode: resp.StatusCode,
+		StatusMsg:  resp.StatusMsg,
+		VideoList:  resp.VideoList,
+		NextTime:   resp.NextTime,
+	})
 }
 
 // VideoPublish .
 // @router /douyin/publish/action/ [POST]
 func VideoPublish(ctx context.Context, c *app.RequestContext) {
-	title := c.Query("title")
+	title := c.PostForm("title")
 	file, _ := c.FormFile("data")
 	v, _ := c.Get("identityKey")
+	//v, _ := c.GetPostForm("identityKey")
 	hlog.Info(file.Filename)
 	// 存储视频
-	fileName := "req.title" + file.Filename + "_" + time.Now().Format("20060504030201") // TODO 拼接一个视频标题或者token的一部分切片
+	splitName := strings.Split(file.Filename, ".")
+	fileName := title + splitName[0] + "_" + time.Now().Format("20060504030201") + splitName[1]
 	hlog.Info(fileName)
 	// Upload the file to specific dst
-	err := c.SaveUploadedFile(file, fmt.Sprintf("./static/videos/%s.mp4", fileName))
+	err := c.SaveUploadedFile(file, fmt.Sprintf("~/go/src/github.com/HelliWrold1/quaver/static/videos/%s.mp4", fileName))
 	if err != nil {
 		SendResponse(c, errno.ConvertErr(err))
 	}
-	fileurl := "127.0.0.1:8082/videos/" + fileName
-	err = new(ffmpeg.Bind).Thumbnail("/Users/fengdacrcy/Desktop/tik_tok_3/quaver/videos/"+fileName+".mp4", "/Users/fengdacrcy/Desktop/tik_tok_3/quaver/static/images/"+fileName+".jpg",
-		1*time.Second, true)
-	if err != nil {
-		SendResponse(c, errno.ConvertErr(err))
-	}
+	fileUrl := "http://127.0.0.1:8082/videos/" + fileName
+	//err = new(ffmpeg.Bind).Thumbnail("/Users/fengdacrcy/Desktop/tik_tok_3/quaver/videos/"+fileName+".mp4", "/Users/fengdacrcy/Desktop/tik_tok_3/quaver/static/images/"+fileName+".jpg",
+	//	1*time.Second, true)
 	_, err = rpc.PublishVideo(context.Background(), &video.PubReq{
 		Title:    title,
 		AuthorId: v.(*api.User).Id,
 		Datetime: time.Now().Unix(),
-		PlayUrl:  fileurl,
+		PlayUrl:  fileUrl,
 	})
-	//c.String(consts.StatusOK, fmt.Sprintf("%s files uploaded!", fileName))
-	//resp = new(api.VideoPublishResponse)
+	if err != nil {
+		SendResponse(c, errno.ConvertErr(err))
+	}
 	c.JSON(consts.StatusOK, utils.H{
 		"status_code": 0,
 		"status_msg":  errno.Success,
@@ -316,7 +317,7 @@ func VideoPublish(ctx context.Context, c *app.RequestContext) {
 }
 
 // VideoPublishList .
-// @router /douyin/publish/list/ [POST]
+// @router /douyin/publish/list/ [GET]
 func VideoPublishList(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req api.VideoPublishListRequest

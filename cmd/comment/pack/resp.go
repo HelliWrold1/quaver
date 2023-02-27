@@ -24,19 +24,20 @@ func BuildStatusResp(err error) *comment.StatusResp {
 }
 
 func BuildCommentsResp(resp *comment.ListResp, comments []*model.Comment) {
-	respCmts := make([]*comment.Comment, 10)
-	for i := 0; i < len(comments); i++ {
+	length := len(comments)
+	respCmts := make([]*comment.Comment, length)
+	for i := 0; i < length; i++ {
 		userName, err := rpc.UserInfo(comments[i].ID)
 		if err != nil {
 			userName = "HelliWrold1"
 		}
-		respCmts = append(respCmts, &comment.Comment{
+		respCmts[i] = &comment.Comment{
 			CommentId: comments[i].ID,
 			UserId:    comments[i].AuthorID,
 			UserName:  userName,
 			Msg:       comments[i].Msg,
 			Date:      comments[i].Datetime.Format("01-02"), // mm-dd
-		})
+		}
 	}
 	resp.CommentList = respCmts
 }

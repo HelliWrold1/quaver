@@ -25,10 +25,11 @@ func BuildStatusResp(err error) *kitexvideo.StatusResp {
 
 // BuildPubVideoResp 打包投稿列表
 func BuildPubVideoResp(resp *kitexvideo.ListResp, videos []*model.Video) {
-	var videosResp = make([]*kitexvideo.Video, 10)
-	for i := 0; i < len(resp.VideoList); i++ {
+	length := len(videos)
+	var videosResp = make([]*kitexvideo.Video, length)
+	for i := 0; i < length; i++ {
 		userName, countLikes, countCmts, like := packVideoInfo(videos, int64(i))
-		videosResp = append(videosResp, &kitexvideo.Video{
+		videosResp[i] = &kitexvideo.Video{
 			VideoId: videos[i].ID,
 			Author: &kitexvideo.User{
 				Id:   videos[i].AuthorID,
@@ -40,18 +41,19 @@ func BuildPubVideoResp(resp *kitexvideo.ListResp, videos []*model.Video) {
 			CommentCount:  countCmts,
 			IsFavorite:    like,
 			Title:         videos[i].Title,
-		})
+		}
 	}
 	resp.VideoList = videosResp
 }
 
 // BuildFeedsResp 打包推流列表
 func BuildFeedsResp(resp *kitexvideo.FeedResp, videos []*model.Video) {
-	var videosResp = make([]*kitexvideo.Video, 30)
+	length := len(videos)
+	var videosResp = make([]*kitexvideo.Video, length)
 
-	for i := 0; i < len(resp.VideoList); i++ {
+	for i := 0; i < length; i++ {
 		userName, countLikes, countCmts, like := packVideoInfo(videos, int64(i))
-		videosResp = append(videosResp, &kitexvideo.Video{
+		videosResp[i] = &kitexvideo.Video{
 			VideoId: videos[i].ID,
 			Author: &kitexvideo.User{
 				Id:   videos[i].AuthorID,
@@ -63,17 +65,18 @@ func BuildFeedsResp(resp *kitexvideo.FeedResp, videos []*model.Video) {
 			CommentCount:  countCmts,
 			IsFavorite:    like,
 			Title:         videos[i].Title,
-		})
+		}
 	}
 	resp.VideoList = videosResp
 }
 
 func BuildLikesResp(resp *kitexvideo.ListLikeResp, videos []*model.Video) {
-	var videosResp = make([]*kitexvideo.Video, 10)
+	length := len(videos)
+	var videosResp = make([]*kitexvideo.Video, length)
 
-	for i := 0; i < len(resp.VideoList); i++ {
+	for i := 0; i < length; i++ {
 		userName, countLikes, countCmts, like := packVideoInfo(videos, int64(i))
-		videosResp = append(videosResp, &kitexvideo.Video{
+		videosResp[i] = &kitexvideo.Video{
 			VideoId: videos[i].ID,
 			Author: &kitexvideo.User{
 				Id:   videos[i].AuthorID,
@@ -85,7 +88,7 @@ func BuildLikesResp(resp *kitexvideo.ListLikeResp, videos []*model.Video) {
 			CommentCount:  countCmts,
 			IsFavorite:    like,
 			Title:         videos[i].Title,
-		})
+		}
 	}
 	resp.VideoList = videosResp
 }

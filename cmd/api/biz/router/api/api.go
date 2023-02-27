@@ -3,7 +3,7 @@
 package Api
 
 import (
-	"github.com/HelliWrold1/quaver/cmd/api/biz/handler/api"
+	api "github.com/HelliWrold1/quaver/cmd/api/biz/handler/api"
 	"github.com/cloudwego/hertz/pkg/app/server"
 )
 
@@ -27,7 +27,7 @@ func Register(r *server.Hertz) {
 			}
 			{
 				_list := _comment.Group("/list", _listMw()...)
-				_list.POST("/", append(_commentlistMw(), api.CommentList)...)
+				_list.GET("/", append(_commentlistMw(), api.CommentList)...)
 			}
 		}
 		{
@@ -38,7 +38,7 @@ func Register(r *server.Hertz) {
 			}
 			{
 				_list0 := _favorite.Group("/list", _list0Mw()...)
-				_list0.POST("/", append(_favouritelistMw(), api.FavouriteList)...)
+				_list0.GET("/", append(_favouritelistMw(), api.FavouriteList)...)
 			}
 		}
 		{
@@ -53,14 +53,20 @@ func Register(r *server.Hertz) {
 			}
 			{
 				_list1 := _publish.Group("/list", _list1Mw()...)
-				_list1.POST("/", append(_videopublishlistMw(), api.VideoPublishList)...)
+				_list1.GET("/", append(_videopublishlistMw(), api.VideoPublishList)...)
 			}
 		}
 		{
 			_user := _douyin.Group("/user", _userMw()...)
 			_user.GET("/", append(_userinfoMw(), api.UserInfo)...)
-			_user.POST("/register", append(_userregisterMw(), api.UserRegister)...)
-			_user.POST("/login", append(_userloginMw(), api.UserLogin)...)
+			{
+				_login := _user.Group("/login", _loginMw()...)
+				_login.POST("/", append(_userloginMw(), api.UserLogin)...)
+			}
+			{
+				_register := _user.Group("/register", _registerMw()...)
+				_register.POST("/", append(_userregisterMw(), api.UserRegister)...)
+			}
 		}
 	}
 }

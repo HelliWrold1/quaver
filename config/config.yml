@@ -4,24 +4,24 @@ server:
   jwtSecret: HelliWrold1
   identityKey: id
   sha256key: HelliWrold1
-  userServiceName: User
+  userServiceName: QuaverUser
   userServiceAddr: 127.0.0.1:9000
-  commentServiceName: Comment
+  commentServiceName: QuaverComment
   commentServiceAddr: 127.0.0.1:9001
-  videoServiceName: Video
+  videoServiceName: QuaverVideo
   videoServiceAddr: 127.0.0.1:9002
-  likeServiceName: Like
+  likeServiceName: QuaverLike
   likeServiceAddr: 127.0.0.1:9003
   apiServiceName: QuaverApi
-  apiServiceAddr: 127.0.0.1:9001
-  exportEndpoint: :4317
+  apiServiceAddr: 127.0.0.1:9004
 
 mysql:
-  host: localhost
+  host: 127.0.0.1
   port: 3306
   database: quaver
   username: root
-  password: Chenfeng20020106 #下次改直接注释
+#  password: Chenfeng20020106 #下次改直接注释
+  password: root
   charset: utf8mb4
   maxIdleConns : 28  # 空闲连接池最连接数
   maxOpenConns : 100 # 最大打开连接数

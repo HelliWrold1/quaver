@@ -14,6 +14,7 @@ type VideoServiceImpl struct{}
 
 // PublishVideo implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) PublishVideo(ctx context.Context, req *video.PubReq) (resp *video.PubResp, err error) {
+	resp = new(video.PubResp)
 	// 检验参数合法性
 	err = req.IsValid()
 	if err != nil {
@@ -32,6 +33,7 @@ func (s *VideoServiceImpl) PublishVideo(ctx context.Context, req *video.PubReq) 
 
 // ListVideos implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) ListVideos(ctx context.Context, req *video.ListReq) (resp *video.ListResp, err error) {
+	resp = new(video.ListResp)
 	err = req.IsValid()
 	if err != nil {
 		resp.StatusResp = pack.BuildStatusResp(errno.ParamErr)
@@ -52,6 +54,7 @@ func (s *VideoServiceImpl) ListVideos(ctx context.Context, req *video.ListReq) (
 // ListFeeds implements the VideoServiceImpl interface.
 // 时间参数可选，API层提供，类型是int64时间戳time.Now().Unix()获取时间戳，默认当前时间
 func (s *VideoServiceImpl) ListFeeds(ctx context.Context, req *video.FeedReq) (resp *video.FeedResp, err error) {
+	resp = new(video.FeedResp)
 	err = req.IsValid()
 	if err != nil {
 		statusResp := pack.BuildStatusResp(err)
@@ -62,9 +65,9 @@ func (s *VideoServiceImpl) ListFeeds(ctx context.Context, req *video.FeedReq) (r
 	}
 
 	// 如果没有提供时间，则按最新的时间返回视频列表
-	if req.LatestTime == nil {
+	if req.LatestTime == 0 {
 		nowTimeStamp := time.Now().Unix()
-		req.LatestTime = &nowTimeStamp
+		req.LatestTime = nowTimeStamp
 	}
 
 	feeds, err := service.NewListFeedsService(ctx).ListFeeds(req)
@@ -84,6 +87,7 @@ func (s *VideoServiceImpl) ListFeeds(ctx context.Context, req *video.FeedReq) (r
 
 // ListLikes implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) ListLikes(ctx context.Context, req *video.ListLikeReq) (resp *video.ListLikeResp, err error) {
+	resp = new(video.ListLikeResp)
 	err = req.IsValid()
 	if err != nil {
 		resp.StatusResp = pack.BuildStatusResp(errno.ParamErr)

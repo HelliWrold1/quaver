@@ -27,7 +27,7 @@ func main() {
 		server.WithHostPorts(":8081"),
 		server.WithMaxRequestBodySize(20<<20),
 		server.WithKeepAlive(true),
-		server.WithHandleMethodNotAllowed(true), // coordinate with NoMethod
+		server.WithHandleMethodNotAllowed(false), // coordinate with NoMethod
 	)
 	register(h)
 	h.Spin()
