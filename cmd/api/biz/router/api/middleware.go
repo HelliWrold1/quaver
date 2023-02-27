@@ -3,6 +3,7 @@
 package Api
 
 import (
+	"github.com/HelliWrold1/quaver/cmd/api/biz/mw"
 	"github.com/cloudwego/hertz/pkg/app"
 )
 
@@ -17,13 +18,17 @@ func _douyinMw() []app.HandlerFunc {
 }
 
 func _commentMw() []app.HandlerFunc {
-	// your code...
-	return nil
+	return []app.HandlerFunc{
+		// use jwt mw
+		mw.JwtMiddleware.MiddlewareFunc(),
+	}
 }
 
 func _actionMw() []app.HandlerFunc {
-	// your code...
-	return nil
+	return []app.HandlerFunc{
+		// use jwt mw
+		mw.JwtMiddleware.MiddlewareFunc(),
+	}
 }
 
 func _comment_ctionMw() []app.HandlerFunc {
@@ -87,8 +92,10 @@ func _action1Mw() []app.HandlerFunc {
 }
 
 func _videopublishMw() []app.HandlerFunc {
-	// your code...
-	return nil
+	return []app.HandlerFunc{
+		// use jwt mw
+		mw.JwtMiddleware.MiddlewareFunc(),
+	}
 }
 
 func _list1Mw() []app.HandlerFunc {
