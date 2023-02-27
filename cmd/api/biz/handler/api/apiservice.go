@@ -45,8 +45,9 @@ func UserRegister(ctx context.Context, c *app.RequestContext) {
 }
 
 // UserLogin .
-// @router /douyin/user/register [POST]
+// @router /douyin/user/login [POST]
 func UserLogin(ctx context.Context, c *app.RequestContext) {
+	hlog.CtxTracef(ctx, "向login发起请求")
 	mw.JwtMiddleware.LoginHandler(ctx, c)
 }
 
@@ -66,10 +67,13 @@ func UserInfo(ctx context.Context, c *app.RequestContext) {
 	if err != nil {
 		SendResponse(c, errno.ConvertErr(err))
 	}
+	respUser := new(api.UserInfo)
+	respUser.Name = resp.Username
+	respUser.Id = resp.UserId
 	c.JSON(consts.StatusOK, utils.H{
 		"status_code":    0,
-		"status_message": errno.Success,
-		"user":           resp,
+		"status_message": errno.Success.ErrMsg,
+		"user":           respUser,
 	})
 }
 
@@ -255,7 +259,7 @@ func CommentList(ctx context.Context, c *app.RequestContext) {
 }
 
 // VideoFeed .
-// @router /douyin/feed/ [POST]
+// @router /douyin/feed/ [GET]
 func VideoFeed(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req api.VideoFeedRequest
@@ -292,11 +296,10 @@ func VideoPublish(ctx context.Context, c *app.RequestContext) {
 		SendResponse(c, errno.ConvertErr(err))
 	}
 	fileurl := "127.0.0.1:8082/videos/" + fileName
-	err = new(ffmpeg.Bind).Thumbnail("/Users/fengdacrcy/Desktop/tik_tok_3/quaver/videos/"+fileName+".mp4","/Users/fengdacrcy/Desktop/tik_tok_3/quaver/static/images/"+fileName+".jpg",
-		1 * time.Second,true)
-	)
+	err = new(ffmpeg.Bind).Thumbnail("/Users/fengdacrcy/Desktop/tik_tok_3/quaver/videos/"+fileName+".mp4", "/Users/fengdacrcy/Desktop/tik_tok_3/quaver/static/images/"+fileName+".jpg",
+		1*time.Second, true)
 	if err != nil {
-		SendResponse(c,errno.ConvertErr(err))
+		SendResponse(c, errno.ConvertErr(err))
 	}
 	_, err = rpc.PublishVideo(context.Background(), &video.PubReq{
 		Title:    title,

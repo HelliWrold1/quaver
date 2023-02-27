@@ -43,7 +43,7 @@ func Register(r *server.Hertz) {
 		}
 		{
 			_feed := _douyin.Group("/feed", _feedMw()...)
-			_feed.POST("/", append(_videofeedMw(), api.VideoFeed)...)
+			_feed.GET("/", append(_videofeedMw(), api.VideoFeed)...)
 		}
 		{
 			_publish := _douyin.Group("/publish", _publishMw()...)
