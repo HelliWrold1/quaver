@@ -4,17 +4,16 @@ server:
   jwtSecret: HelliWrold1
   identityKey: id
   sha256key: HelliWrold1
-  userServiceName: User
+  userServiceName: QuaverUser
   userServiceAddr: 127.0.0.1:9000
-  commentServiceName: Comment
+  commentServiceName: QuaverComment
   commentServiceAddr: 127.0.0.1:9001
-  videoServiceName: Video
+  videoServiceName: QuaverVideo
   videoServiceAddr: 127.0.0.1:9002
-  likeServiceName: Like
+  likeServiceName: QuaverLike
   likeServiceAddr: 127.0.0.1:9003
   apiServiceName: QuaverApi
-  apiServiceAddr: 127.0.0.1:9001
-  exportEndpoint: :4317
+  apiServiceAddr: 127.0.0.1:9004
 
 mysql:
   host: 127.0.0.1

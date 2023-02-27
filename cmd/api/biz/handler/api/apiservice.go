@@ -273,7 +273,12 @@ func VideoFeed(ctx context.Context, c *app.RequestContext) {
 		SendResponse(c, errno.ConvertErr(err))
 	}
 
-	c.JSON(consts.StatusOK, resp)
+	c.JSON(consts.StatusOK, &video.FeedResp{
+		StatusCode: resp.StatusCode,
+		StatusMsg:  resp.StatusMsg,
+		VideoList:  resp.VideoList,
+		NextTime:   resp.NextTime,
+	})
 }
 
 // VideoPublish .

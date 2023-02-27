@@ -22,7 +22,7 @@ func ListVideos(ctx context.Context, userID int64) ([]*model.Video, error) {
 func ListFeeds(ctx context.Context, t time.Time) ([]*model.Video, error) {
 	q := Q.Video.WithContext(ctx)
 	// 降序排列，找到最新的30个视频，最后一个视频作为下个latest_time
-	feeds, err := q.Order(Q.Video.Datetime.Desc()).Limit(30).Where(Q.Video.Datetime.Lte(t)).Find()
+	feeds, err := q.Where(Q.Video.Datetime.Lte(t)).Order(Q.Video.Datetime.Desc()).Limit(30).Find()
 	if err != nil {
 		return nil, err
 	}
