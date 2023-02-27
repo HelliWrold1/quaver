@@ -28,5 +28,9 @@ func (i *Instance) GetName() string {
 }
 
 func Get() *Bind {
-	return instance.bind
+	return &Bind{
+		FFMpeg:         "ffmpeg",
+		FFProbe:        "ffprobe",
+		CommandTimeout: 10,
+	}
 }

@@ -56,12 +56,9 @@ func (ff *Bind) Duration(src string) (time.Duration, error) {
 // Thumbnail a thumbnail taken from a moment in the video, overwrite is true, overwrite an existing file
 func (ff *Bind) Thumbnail(src string, dst string, duration time.Duration, overwrite bool) error {
 	args := []string{"-i", src, "-ss", fmt.Sprintf("%f", duration.Seconds()), "-vframes", "1", dst}
-	fmt.Println(args)
-	fmt.Println("#####")
 	if overwrite {
 		args = append([]string{"-y"}, args...)
 	}
-	//fmt.Println(ff.FFMpeg + "###")
 	cmd := exec.Command(ff.FFMpeg, args...)
 	var out bytes.Buffer
 	cmd.Stdout = &out
