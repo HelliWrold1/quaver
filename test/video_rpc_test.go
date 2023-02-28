@@ -2,6 +2,7 @@ package test
 
 import (
 	"context"
+	likedal "github.com/HelliWrold1/quaver/cmd/like/dal"
 	"github.com/HelliWrold1/quaver/cmd/video/dal"
 	"github.com/HelliWrold1/quaver/config"
 	"github.com/HelliWrold1/quaver/kitex_gen/video"
@@ -17,6 +18,7 @@ var videoClient videoservice.Client
 
 func initVideo() {
 	dal.Init()
+	likedal.Init()
 	// 向etcd注册中心查找方法
 	conf := config.NewQuaverConfig()
 	conf.LocalConfigInit()
@@ -41,6 +43,7 @@ func initVideo() {
 	videoClient = c
 }
 
+// ListFeeds 列出推流列表
 func ListFeeds(ctx context.Context, req *video.FeedReq) (*video.FeedResp, error) {
 	resp, err := videoClient.ListFeeds(ctx, req)
 	if err != nil {
@@ -48,7 +51,34 @@ func ListFeeds(ctx context.Context, req *video.FeedReq) (*video.FeedResp, error)
 	}
 	return resp, nil
 }
-func TestListFeedsRPC(t *testing.T) {
+
+func PublishVideo(ctx context.Context, req *video.PubReq) (*video.PubResp, error) {
+	resp, err := videoClient.PublishVideo(ctx, req)
+	if err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+// ListVideos 列出发布列表
+func ListVideos(ctx context.Context, req *video.ListReq) (*video.ListResp, error) {
+	resp, err := videoClient.ListVideos(ctx, req)
+	if err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+// ListLikes 列出喜欢列表
+func ListLikes(ctx context.Context, req *video.ListLikeReq) (*video.ListLikeResp, error) {
+	resp, err := videoClient.ListLikes(ctx, req)
+	if err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func TestVideoRPC(t *testing.T) {
 	initVideo()
 
 	// ListFeeds 列出推流列表
@@ -58,6 +88,22 @@ func TestListFeedsRPC(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		t.Error(feeds)
+		t.Log(feeds)
+	})
+
+	t.Run("ListVideos", func(t *testing.T) {
+		videos, err := ListVideos(context.Background(), &video.ListReq{UserId: 1})
+		if err != nil {
+			t.Error(err)
+		}
+		t.Log(videos)
+	})
+
+	t.Run("ListLikes", func(t *testing.T) {
+		likes, err := ListLikes(context.Background(), &video.ListLikeReq{UserId: 1})
+		if err != nil {
+			t.Error(err)
+		}
+		t.Log(likes)
 	})
 }

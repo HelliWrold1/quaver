@@ -10,6 +10,12 @@ func LikeVideo(ctx context.Context, c *model.Like) error {
 	var del int64 = 0
 	c.Delete_ = &del
 	q := Q.Like.WithContext(ctx)
+	find, _ := q.Where(Q.Like.LikerID.Eq(c.LikerID), Q.Like.VideoID.Eq(c.VideoID), Q.Like.Delete_.Eq(1)).Find()
+
+	if len(find) != 0 { // 如果有点赞记录
+		_, err := q.Where(Q.Like.LikerID.Eq(c.LikerID), Q.Like.VideoID.Eq(c.VideoID), Q.Like.Delete_.Eq(1)).Update(Q.Like.Delete_, 0)
+		return err
+	}
 	return q.Create(c)
 }
 
@@ -37,7 +43,7 @@ func CountLikes(ctx context.Context, videoID int64) (int64, error) {
 
 func QueryLike(ctx context.Context, uid int64, vid int64) (bool, error) {
 	q := Q.Like.WithContext(ctx)
-	records, _ := q.Where(Q.Like.LikerID.Eq(uid), Q.Like.VideoID.Eq(vid), Q.Like.Delete_.Eq(1)).Find()
+	records, _ := q.Where(Q.Like.LikerID.Eq(uid), Q.Like.VideoID.Eq(vid), Q.Like.Delete_.Eq(0)).Find()
 	if len(records) == 0 {
 		return false, nil
 	}
