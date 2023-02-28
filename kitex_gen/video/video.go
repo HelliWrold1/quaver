@@ -1621,11 +1621,8 @@ func (p *Video) Field8DeepEqual(src string) bool {
 }
 
 type User struct {
-	Id              int64   `thrift:"id,1,required" frugal:"1,required,i64" json:"id"`
-	Name            string  `thrift:"name,2,required" frugal:"2,required,string" json:"name"`
-	Avatar          *string `thrift:"avatar,3,optional" frugal:"3,optional,string" json:"avatar,omitempty"`
-	BackgroundImage *string `thrift:"background_image,4,optional" frugal:"4,optional,string" json:"background_image,omitempty"`
-	WorkCount       *int64  `thrift:"work_count,5,optional" frugal:"5,optional,i64" json:"work_count,omitempty"`
+	Id   int64  `thrift:"id,1,required" frugal:"1,required,i64" json:"id"`
+	Name string `thrift:"name,2,required" frugal:"2,required,string" json:"name"`
 }
 
 func NewUser() *User {
@@ -1643,67 +1640,16 @@ func (p *User) GetId() (v int64) {
 func (p *User) GetName() (v string) {
 	return p.Name
 }
-
-var User_Avatar_DEFAULT string
-
-func (p *User) GetAvatar() (v string) {
-	if !p.IsSetAvatar() {
-		return User_Avatar_DEFAULT
-	}
-	return *p.Avatar
-}
-
-var User_BackgroundImage_DEFAULT string
-
-func (p *User) GetBackgroundImage() (v string) {
-	if !p.IsSetBackgroundImage() {
-		return User_BackgroundImage_DEFAULT
-	}
-	return *p.BackgroundImage
-}
-
-var User_WorkCount_DEFAULT int64
-
-func (p *User) GetWorkCount() (v int64) {
-	if !p.IsSetWorkCount() {
-		return User_WorkCount_DEFAULT
-	}
-	return *p.WorkCount
-}
 func (p *User) SetId(val int64) {
 	p.Id = val
 }
 func (p *User) SetName(val string) {
 	p.Name = val
 }
-func (p *User) SetAvatar(val *string) {
-	p.Avatar = val
-}
-func (p *User) SetBackgroundImage(val *string) {
-	p.BackgroundImage = val
-}
-func (p *User) SetWorkCount(val *int64) {
-	p.WorkCount = val
-}
 
 var fieldIDToName_User = map[int16]string{
 	1: "id",
 	2: "name",
-	3: "avatar",
-	4: "background_image",
-	5: "work_count",
-}
-
-func (p *User) IsSetAvatar() bool {
-	return p.Avatar != nil
-}
-
-func (p *User) IsSetBackgroundImage() bool {
-	return p.BackgroundImage != nil
-}
-
-func (p *User) IsSetWorkCount() bool {
-	return p.WorkCount != nil
 }
 
 func (p *User) Read(iprot thrift.TProtocol) (err error) {
@@ -1744,36 +1690,6 @@ func (p *User) Read(iprot thrift.TProtocol) (err error) {
 					goto ReadFieldError
 				}
 				issetName = true
-			} else {
-				if err = iprot.Skip(fieldTypeId); err != nil {
-					goto SkipFieldError
-				}
-			}
-		case 3:
-			if fieldTypeId == thrift.STRING {
-				if err = p.ReadField3(iprot); err != nil {
-					goto ReadFieldError
-				}
-			} else {
-				if err = iprot.Skip(fieldTypeId); err != nil {
-					goto SkipFieldError
-				}
-			}
-		case 4:
-			if fieldTypeId == thrift.STRING {
-				if err = p.ReadField4(iprot); err != nil {
-					goto ReadFieldError
-				}
-			} else {
-				if err = iprot.Skip(fieldTypeId); err != nil {
-					goto SkipFieldError
-				}
-			}
-		case 5:
-			if fieldTypeId == thrift.I64 {
-				if err = p.ReadField5(iprot); err != nil {
-					goto ReadFieldError
-				}
 			} else {
 				if err = iprot.Skip(fieldTypeId); err != nil {
 					goto SkipFieldError
@@ -1838,33 +1754,6 @@ func (p *User) ReadField2(iprot thrift.TProtocol) error {
 	return nil
 }
 
-func (p *User) ReadField3(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadString(); err != nil {
-		return err
-	} else {
-		p.Avatar = &v
-	}
-	return nil
-}
-
-func (p *User) ReadField4(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadString(); err != nil {
-		return err
-	} else {
-		p.BackgroundImage = &v
-	}
-	return nil
-}
-
-func (p *User) ReadField5(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI64(); err != nil {
-		return err
-	} else {
-		p.WorkCount = &v
-	}
-	return nil
-}
-
 func (p *User) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("User"); err != nil {
@@ -1877,18 +1766,6 @@ func (p *User) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField2(oprot); err != nil {
 			fieldId = 2
-			goto WriteFieldError
-		}
-		if err = p.writeField3(oprot); err != nil {
-			fieldId = 3
-			goto WriteFieldError
-		}
-		if err = p.writeField4(oprot); err != nil {
-			fieldId = 4
-			goto WriteFieldError
-		}
-		if err = p.writeField5(oprot); err != nil {
-			fieldId = 5
 			goto WriteFieldError
 		}
 
@@ -1944,63 +1821,6 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
 }
 
-func (p *User) writeField3(oprot thrift.TProtocol) (err error) {
-	if p.IsSetAvatar() {
-		if err = oprot.WriteFieldBegin("avatar", thrift.STRING, 3); err != nil {
-			goto WriteFieldBeginError
-		}
-		if err := oprot.WriteString(*p.Avatar); err != nil {
-			return err
-		}
-		if err = oprot.WriteFieldEnd(); err != nil {
-			goto WriteFieldEndError
-		}
-	}
-	return nil
-WriteFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 3 begin error: ", p), err)
-WriteFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 3 end error: ", p), err)
-}
-
-func (p *User) writeField4(oprot thrift.TProtocol) (err error) {
-	if p.IsSetBackgroundImage() {
-		if err = oprot.WriteFieldBegin("background_image", thrift.STRING, 4); err != nil {
-			goto WriteFieldBeginError
-		}
-		if err := oprot.WriteString(*p.BackgroundImage); err != nil {
-			return err
-		}
-		if err = oprot.WriteFieldEnd(); err != nil {
-			goto WriteFieldEndError
-		}
-	}
-	return nil
-WriteFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 4 begin error: ", p), err)
-WriteFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 4 end error: ", p), err)
-}
-
-func (p *User) writeField5(oprot thrift.TProtocol) (err error) {
-	if p.IsSetWorkCount() {
-		if err = oprot.WriteFieldBegin("work_count", thrift.I64, 5); err != nil {
-			goto WriteFieldBeginError
-		}
-		if err := oprot.WriteI64(*p.WorkCount); err != nil {
-			return err
-		}
-		if err = oprot.WriteFieldEnd(); err != nil {
-			goto WriteFieldEndError
-		}
-	}
-	return nil
-WriteFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 5 begin error: ", p), err)
-WriteFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 5 end error: ", p), err)
-}
-
 func (p *User) String() string {
 	if p == nil {
 		return "<nil>"
@@ -2020,15 +1840,6 @@ func (p *User) DeepEqual(ano *User) bool {
 	if !p.Field2DeepEqual(ano.Name) {
 		return false
 	}
-	if !p.Field3DeepEqual(ano.Avatar) {
-		return false
-	}
-	if !p.Field4DeepEqual(ano.BackgroundImage) {
-		return false
-	}
-	if !p.Field5DeepEqual(ano.WorkCount) {
-		return false
-	}
 	return true
 }
 
@@ -2042,42 +1853,6 @@ func (p *User) Field1DeepEqual(src int64) bool {
 func (p *User) Field2DeepEqual(src string) bool {
 
 	if strings.Compare(p.Name, src) != 0 {
-		return false
-	}
-	return true
-}
-func (p *User) Field3DeepEqual(src *string) bool {
-
-	if p.Avatar == src {
-		return true
-	} else if p.Avatar == nil || src == nil {
-		return false
-	}
-	if strings.Compare(*p.Avatar, *src) != 0 {
-		return false
-	}
-	return true
-}
-func (p *User) Field4DeepEqual(src *string) bool {
-
-	if p.BackgroundImage == src {
-		return true
-	} else if p.BackgroundImage == nil || src == nil {
-		return false
-	}
-	if strings.Compare(*p.BackgroundImage, *src) != 0 {
-		return false
-	}
-	return true
-}
-func (p *User) Field5DeepEqual(src *int64) bool {
-
-	if p.WorkCount == src {
-		return true
-	} else if p.WorkCount == nil || src == nil {
-		return false
-	}
-	if *p.WorkCount != *src {
 		return false
 	}
 	return true

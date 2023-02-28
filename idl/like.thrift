@@ -9,13 +9,13 @@ struct StatusResp{
 
 struct Video {
   1: required i64 video_id // 视频唯一标识
-  2: required User author // 视频作者信息
-  3: required string play_url // 视频播放地址
-  4: required string cover_url  // 视频封面地址
-  5: required i64 favorite_count // 视频的点赞总数
-  6: required i64 comment_count // 视频的评论总数
-  7: required bool is_favorite // true-已点赞，false-未点赞
-  8: required string title // 视频标题
+//  2: required User author // 视频作者信息
+//  3: required string play_url // 视频播放地址
+//  4: required string cover_url  // 视频封面地址
+//  5: required i64 favorite_count // 视频的点赞总数
+//  6: required i64 comment_count // 视频的评论总数
+//  7: required bool is_favorite // true-已点赞，false-未点赞
+//  8: required string title // 视频标题
 }
 
 struct User {

@@ -25,11 +25,6 @@ func (p *StatusResp) IsValid() error {
 	return nil
 }
 func (p *Video) IsValid() error {
-	if p.Author != nil {
-		if err := p.Author.IsValid(); err != nil {
-			return fmt.Errorf("filed Author not valid, %w", err)
-		}
-	}
 	return nil
 }
 func (p *User) IsValid() error {

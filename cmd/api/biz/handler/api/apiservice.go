@@ -269,16 +269,12 @@ func VideoFeed(ctx context.Context, c *app.RequestContext) {
 	resp, err := rpc.ListFeeds(context.Background(), &video.FeedReq{
 		LatestTime: req.LatestTime,
 	})
+
 	if err != nil {
 		SendResponse(c, errno.ConvertErr(err))
 	}
 
-	c.JSON(consts.StatusOK, &video.FeedResp{
-		StatusCode: resp.StatusCode,
-		StatusMsg:  resp.StatusMsg,
-		VideoList:  resp.VideoList,
-		NextTime:   resp.NextTime,
-	})
+	c.JSON(consts.StatusOK, resp)
 }
 
 // VideoPublish .

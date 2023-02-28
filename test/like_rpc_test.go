@@ -2,6 +2,7 @@ package test
 
 import (
 	"context"
+	"fmt"
 	"github.com/HelliWrold1/quaver/cmd/like/dal"
 	videodal "github.com/HelliWrold1/quaver/cmd/video/dal"
 	"github.com/HelliWrold1/quaver/config"
@@ -43,6 +44,7 @@ func initLike() {
 func QueryVideoByUserID(ctx context.Context, uid int64) (*like.ListResp, error) {
 	resp, err := likeClient.ListLikes(ctx, &like.ListReq{UserId: uid})
 	if err != nil {
+		fmt.Println(err.Error())
 		return nil, err
 	}
 	return resp, nil
@@ -87,7 +89,7 @@ func DeleteLike(ctx context.Context, req *like.DeleteReq) (resp *like.DeleteResp
 func TestLikeRPC(t *testing.T) {
 	initLike()
 
-	t.Run("ListLikes", func(t *testing.T) {
+	t.Run("QueryVideoByUserID", func(t *testing.T) {
 		resp, err := QueryVideoByUserID(context.Background(), 1)
 		if err != nil {
 			t.Error(err)
@@ -95,11 +97,4 @@ func TestLikeRPC(t *testing.T) {
 		t.Log(resp)
 	})
 
-	t.Run("QueryVideoByUserID", func(t *testing.T) {
-		video, err := QueryVideoByUserID(context.Background(), 1)
-		if err != nil {
-			t.Error(err)
-		}
-		t.Log(video)
-	})
 }

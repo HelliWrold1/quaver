@@ -34,9 +34,9 @@ struct Video {
 struct User {
   1: required i64 id// 用户id
   2: required string name// 用户名称
-  3: optional string avatar//用户头像
-  4: optional string background_image//用户个人页顶部大图
-  5: optional i64 work_count//作品数量
+//  3: optional string avatar//用户头像
+//  4: optional string background_image//用户个人页顶部大图
+//  5: optional i64 work_count//作品数量
 //  6: required bool is_follow // true-已关注，false-未关注
 }
 

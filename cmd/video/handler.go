@@ -78,7 +78,11 @@ func (s *VideoServiceImpl) ListFeeds(ctx context.Context, req *video.FeedReq) (r
 		resp.StatusMsg = &statusMsg
 		return resp, err
 	}
+
 	pack.BuildFeedsResp(resp, feeds)
+	resp.StatusCode = 0
+	successMsg := "success"
+	resp.StatusMsg = &successMsg
 	// 获取视频列表里最旧的时间
 	latestTime := feeds[len(feeds)-1].Datetime.Unix()
 	resp.NextTime = &latestTime
