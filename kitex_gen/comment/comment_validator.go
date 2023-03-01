@@ -45,6 +45,11 @@ func (p *PubResp) IsValid() error {
 			return fmt.Errorf("filed StatusResp not valid, %w", err)
 		}
 	}
+	if p.Comment != nil {
+		if err := p.Comment.IsValid(); err != nil {
+			return fmt.Errorf("filed Comment not valid, %w", err)
+		}
+	}
 	return nil
 }
 func (p *ListReq) IsValid() error {

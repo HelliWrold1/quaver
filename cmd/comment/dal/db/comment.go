@@ -5,9 +5,10 @@ import (
 	"github.com/HelliWrold1/quaver/dal/model"
 )
 
-func PublishComment(ctx context.Context, c *model.Comment) error {
+func PublishComment(ctx context.Context, c *model.Comment) (int64, error) {
 	q := Q.Comment.WithContext(ctx)
-	return q.Create(c)
+	err := q.Create(c)
+	return c.ID, err
 }
 
 func ListComments(ctx context.Context, videoId int64) ([]*model.Comment, error) {

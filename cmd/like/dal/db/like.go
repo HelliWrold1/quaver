@@ -10,10 +10,10 @@ func LikeVideo(ctx context.Context, c *model.Like) error {
 	var del int64 = 0
 	c.Delete_ = &del
 	q := Q.Like.WithContext(ctx)
-	find, _ := q.Where(Q.Like.LikerID.Eq(c.LikerID), Q.Like.VideoID.Eq(c.VideoID), Q.Like.Delete_.Eq(1)).Find()
+	find, _ := q.Where(Q.Like.LikerID.Eq(c.LikerID), Q.Like.VideoID.Eq(c.VideoID)).Find()
 
 	if len(find) != 0 { // 如果有点赞记录
-		_, err := q.Where(Q.Like.LikerID.Eq(c.LikerID), Q.Like.VideoID.Eq(c.VideoID), Q.Like.Delete_.Eq(1)).Update(Q.Like.Delete_, 0)
+		_, err := q.Where(Q.Like.LikerID.Eq(c.LikerID), Q.Like.VideoID.Eq(c.VideoID)).Update(Q.Like.Delete_, 0)
 		return err
 	}
 	return q.Create(c)

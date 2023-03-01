@@ -16,12 +16,12 @@ func NewPublishCommentService(ctx context.Context) *PublishCommentService {
 	return &PublishCommentService{ctx: ctx}
 }
 
-func (s *PublishCommentService) PublishComment(req *comment.PubReq) error {
+func (s *PublishCommentService) PublishComment(req *comment.PubReq) (int64, error) {
 	return db.PublishComment(s.ctx, &model.Comment{
 		AuthorID: req.AuthorId,
 		VideoID:  req.VideoId,
 		Msg:      req.Msg,
-		Datetime: time.Now(),
+		Datetime: time.Unix(req.Datetime, 0),
 		Delete_:  0,
 	})
 }

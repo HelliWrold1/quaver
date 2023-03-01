@@ -17,11 +17,12 @@ struct PubReq{
     1: required string msg(vt.min_size = "1")
     2: required i64 author_id(vt.gt = "0")
     3: required i64 video_id(vt.gt = "0")
+    4: required i64 datetime(vt.gt = "0")
 }
 
 struct PubResp{
     1: required StatusResp status_resp
-    2: required list<Comment> comment_list
+    2: required Comment comment // id user msg datetime
 }
 
 struct ListReq{

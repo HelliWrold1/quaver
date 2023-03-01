@@ -6,6 +6,7 @@ import (
 	"github.com/HelliWrold1/quaver/dal/model"
 	"github.com/HelliWrold1/quaver/kitex_gen/comment"
 	"github.com/HelliWrold1/quaver/pkg/errno"
+	"time"
 )
 
 func BuildStatusResp(err error) *comment.StatusResp {
@@ -23,7 +24,23 @@ func BuildStatusResp(err error) *comment.StatusResp {
 	return &comment.StatusResp{StatusCode: int32(s.ErrCode), StatusMsg: &s.ErrMsg}
 }
 
-func BuildCommentsResp(resp *comment.ListResp, comments []*model.Comment) {
+func BuildCommentResp(req *comment.PubReq, cid int64) *comment.Comment {
+	// 如果rpc拿不到数据，那么用备用名字顶替
+	userName, err := rpc.UserInfo(req.AuthorId)
+	cmt := new(comment.Comment)
+	if err != nil {
+		cmt.UserName = "HelliWrold1"
+	} else {
+		cmt.UserName = userName
+	}
+	cmt.CommentId = cid
+	cmt.UserId = req.AuthorId
+	cmt.Msg = req.Msg
+	cmt.Date = time.Unix(req.Datetime, 0).Format("03-02")
+	return cmt
+}
+
+func BuildListCommentsResp(resp *comment.ListResp, comments []*model.Comment) {
 	length := len(comments)
 	respCmts := make([]*comment.Comment, length)
 	for i := 0; i < length; i++ {

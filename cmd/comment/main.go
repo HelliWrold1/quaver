@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/HelliWrold1/quaver/cmd/comment/dal"
+	"github.com/HelliWrold1/quaver/cmd/comment/rpc"
 	"github.com/HelliWrold1/quaver/config"
 	comment "github.com/HelliWrold1/quaver/kitex_gen/comment/commentservice"
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -15,6 +16,7 @@ import (
 
 func Init() {
 	dal.Init()
+	rpc.Init()
 	klog.SetLogger(kitexlogrus.NewLogger())
 	klog.SetLevel(klog.LevelInfo)
 }

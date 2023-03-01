@@ -21,4 +21,26 @@ func TestVideoService(t *testing.T) {
 			t.Log(feeds[i].PlayURL)
 		}
 	})
+
+	t.Run("ListVideos", func(t *testing.T) {
+		videos, err := service.NewListPublishVideosService(context.Background()).LikeVideo(&video.ListReq{UserId: 1})
+		if err != nil {
+			assert.Fail(t, err.Error())
+		}
+		for i := 0; i < len(videos); i++ {
+			t.Log(videos[i].PlayURL)
+		}
+	})
+
+	t.Run("ListLikes", func(t *testing.T) {
+		likes, err := service.NewListLikeVideosService(context.Background()).ListLikeVideos(&video.ListLikeReq{
+			UserId: 1,
+		})
+		if err != nil {
+			assert.Fail(t, err.Error())
+		}
+		for i := 0; i < len(likes); i++ {
+			t.Log(likes[i].PlayURL)
+		}
+	})
 }

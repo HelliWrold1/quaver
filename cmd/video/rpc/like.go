@@ -36,7 +36,6 @@ func initLike() {
 
 // QueryVideoByUserID 返回喜欢的视频列表
 func QueryVideoByUserID(ctx context.Context, uid int64) (*like.ListResp, error) {
-	//resp := new(like.ListResp)
 	resp, err := likeClient.ListLikes(ctx, &like.ListReq{UserId: uid})
 	if err != nil {
 		return nil, err

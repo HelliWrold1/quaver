@@ -20,11 +20,13 @@ func (s *CommentServiceImpl) PublishComment(ctx context.Context, req *comment.Pu
 		resp.StatusResp = pack.BuildStatusResp(errno.ParamErr)
 	}
 	// 发布
-	err = service.NewPublishCommentService(ctx).PublishComment(req)
+	commentID, err := service.NewPublishCommentService(ctx).PublishComment(req)
 	if err != nil {
 		resp.StatusResp = pack.BuildStatusResp(err)
 		return resp, err
 	}
+
+	resp.Comment = pack.BuildCommentResp(req, commentID)
 	resp.StatusResp = pack.BuildStatusResp(errno.Success)
 
 	return resp, nil
@@ -43,7 +45,7 @@ func (s *CommentServiceImpl) ListComment(ctx context.Context, req *comment.ListR
 	if err != nil {
 		resp.StatusResp = pack.BuildStatusResp(err)
 	}
-	pack.BuildCommentsResp(resp, comments)
+	pack.BuildListCommentsResp(resp, comments)
 	resp.StatusResp = pack.BuildStatusResp(errno.Success)
 	return resp, nil
 }
