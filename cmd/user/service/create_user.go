@@ -19,7 +19,7 @@ func NewCreateUserService(ctx context.Context) *CreateUserService {
 	return &CreateUserService{ctx: ctx}
 }
 
-func (s *CreateUserService) CreateUser(req *user.RegisterReq) error {
+func (s *CreateUserService) CreateUser(req *user.RegisterReq) (int64, error) {
 	return db.CreateUser(s.ctx, &model.User{Username: req.Username, Password: SetPwd(req.Password)})
 }
 

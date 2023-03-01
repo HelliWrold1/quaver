@@ -104,5 +104,6 @@ func (s *VideoServiceImpl) ListLikes(ctx context.Context, req *video.ListLikeReq
 		return resp, err
 	}
 	pack.BuildLikesResp(resp, videos)
+	resp.StatusResp = pack.BuildStatusResp(errno.Success)
 	return resp, nil
 }

@@ -20,13 +20,13 @@ func (s *UserServiceImpl) UserRegister(ctx context.Context, req *user.RegisterRe
 		resp.StatusResp = pack.BuildStatusResp(errno.ParamErr) // 参数错误
 	}
 	// 创建
-	err = service.NewCreateUserService(ctx).CreateUser(req)
+	uid, err := service.NewCreateUserService(ctx).CreateUser(req)
 	if err != nil {
 		resp.StatusResp = pack.BuildStatusResp(err)
 		return resp, err
 	}
 	resp.StatusResp = pack.BuildStatusResp(errno.Success)
-
+	resp.UserId = uid
 	return resp, nil
 }
 

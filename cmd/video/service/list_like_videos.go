@@ -22,20 +22,18 @@ func (s *ListLikeVideosService) ListLikeVideos(req *video.ListLikeReq) ([]*model
 	if err != nil {
 		return nil, err
 	}
-
-	if len(videoResp.VideoList) == 0 {
+	videoCounts := len(videoResp.VideoList)
+	if videoCounts == 0 {
 		return nil, err
 	}
-	// TODO 解决容量问题
-	videos := make([]*model.Video, 10)
-	for i := 0; i < len(videoResp.VideoList); i++ {
+	videos := make([]*model.Video, videoCounts)
+	for i := 0; i < videoCounts; i++ {
 		// 通过喜欢的视频ID找到视频信息
 		likes, err := db.ListLikes(s.ctx, videoResp.VideoList[i].VideoId)
 		if err != nil {
 			return nil, err
 		}
-		like := likes[0]
-		videos = append(videos, like)
+		videos[i] = likes[0]
 	}
 	return videos, nil
 }
