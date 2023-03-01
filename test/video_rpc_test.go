@@ -24,7 +24,7 @@ func TestVideoRPC(t *testing.T) {
 	apirpc.Init()
 	videorpc.Init() // video服务需要其他服务的支持
 
-	t.Run("ListFeedsRPC", func(t *testing.T) {
+	t.Run("ListFeeds", func(t *testing.T) {
 		feeds, err := apirpc.ListFeeds(context.Background(), &video.FeedReq{LatestTime: 0})
 		if err != nil {
 			t.Error(err)
@@ -53,4 +53,5 @@ func TestVideoRPC(t *testing.T) {
 			t.Log(likes.VideoList[i].PlayUrl)
 		}
 	})
+
 }
